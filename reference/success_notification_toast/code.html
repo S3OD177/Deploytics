@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Success Notification Toast</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#111722",
+              "surface-dark": "#1a2230",
+              "border-dark": "#232f48",
+              "text-secondary": "#92a4c9",
+              "success": "#0bda5e",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            keyframes: {
+                "slide-in": {
+                    "0%": { transform: "translateX(100%)", opacity: 0 },
+                    "100%": { transform: "translateX(0)", opacity: 1 },
+                },
+                "slide-up": {
+                    "0%": { transform: "translateY(100%)", opacity: 0 },
+                    "100%": { transform: "translateY(0)", opacity: 1 },
+                }
+            },
+            animation: {
+                "slide-in": "slide-in 0.4s ease-out forwards",
+                "slide-up": "slide-up 0.4s ease-out forwards",
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display overflow-hidden selection:bg-primary selection:text-white">
+<div class="flex h-screen w-full">
+<!-- Side Navigation -->
+<aside class="w-72 flex-shrink-0 border-r border-border-dark hidden lg:flex flex-col bg-background-dark h-full">
+<div class="flex flex-col h-full p-6">
+<div class="mb-8">
+<h1 class="text-white text-xl font-bold leading-normal tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-primary fill">bolt</span>
+                        DevPulse
+                    </h1>
+<p class="text-text-secondary text-sm font-normal mt-1">Developer Visibility</p>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-dark border border-border-dark group transition-all" href="#">
+<span class="material-symbols-outlined text-white group-hover:text-primary transition-colors">dashboard</span>
+<p class="text-white text-sm font-medium">Overview</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-dark/50 transition-all text-text-secondary hover:text-white" href="#">
+<span class="material-symbols-outlined">commit</span>
+<p class="text-sm font-medium">Commits</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-dark/50 transition-all text-text-secondary hover:text-white" href="#">
+<span class="material-symbols-outlined">rocket_launch</span>
+<p class="text-sm font-medium">Deployments</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-dark/50 transition-all text-text-secondary hover:text-white" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<p class="text-sm font-medium">Analytics</p>
+</a>
+<div class="flex-1"></div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-surface-dark/50 transition-all text-text-secondary hover:text-white" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium">Settings</p>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-background-dark relative">
+<!-- Top Header -->
+<header class="h-16 flex items-center justify-between px-6 lg:px-10 border-b border-border-dark bg-background-dark/80 backdrop-blur-md sticky top-0 z-10">
+<div class="flex items-center gap-4 lg:hidden">
+<span class="material-symbols-outlined text-white">menu</span>
+<h2 class="text-white text-lg font-bold">DevPulse</h2>
+</div>
+<!-- Search -->
+<div class="hidden lg:flex max-w-md w-full">
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary group-focus-within:text-white transition-colors">search</span>
+</div>
+<input class="block w-full rounded-xl border-none bg-surface-dark py-2 pl-10 pr-3 text-white placeholder:text-text-secondary focus:ring-2 focus:ring-primary/50 text-sm transition-all" placeholder="Search repositories, builds..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-text-secondary hover:text-white transition-colors rounded-lg hover:bg-surface-dark">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full border-2 border-background-dark"></span>
+</button>
+<div class="size-8 rounded-full bg-surface-dark overflow-hidden border border-border-dark" data-alt="User avatar placeholder with abstract gradient" style="background: linear-gradient(135deg, #135bec 0%, #0bda5e 100%);"></div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+<div class="max-w-5xl mx-auto flex flex-col gap-8 pb-20">
+<!-- Title Section -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-2xl font-bold text-white tracking-tight">Project Overview</h2>
+<p class="text-text-secondary text-sm mt-1">Real-time metrics for 'frontend-core'</p>
+</div>
+<button class="hidden sm:flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            New Deployment
+                        </button>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/30 hover:bg-surface-dark/50 transition-colors">
+<div class="flex items-center justify-between">
+<p class="text-text-secondary text-sm font-medium">Total Commits</p>
+<span class="material-symbols-outlined text-text-secondary text-[20px]">commit</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-white text-3xl font-bold leading-none">1,248</p>
+<span class="text-success text-sm font-medium mb-1 flex items-center">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                                    12%
+                                </span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/30 hover:bg-surface-dark/50 transition-colors">
+<div class="flex items-center justify-between">
+<p class="text-text-secondary text-sm font-medium">Active Deployments</p>
+<span class="material-symbols-outlined text-text-secondary text-[20px]">deployed_code</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-white text-3xl font-bold leading-none">12</p>
+<span class="text-success text-sm font-medium mb-1 flex items-center">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                                    2%
+                                </span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/30 hover:bg-surface-dark/50 transition-colors">
+<div class="flex items-center justify-between">
+<p class="text-text-secondary text-sm font-medium">System Health</p>
+<span class="material-symbols-outlined text-text-secondary text-[20px]">health_and_safety</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-white text-3xl font-bold leading-none">98.5%</p>
+<span class="text-success text-sm font-medium mb-1 flex items-center">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                                    0.5%
+                                </span>
+</div>
+</div>
+</div>
+<!-- Recent Activity List -->
+<div class="flex flex-col gap-4">
+<h3 class="text-lg font-bold text-white">Recent Activity</h3>
+<div class="flex flex-col gap-2">
+<!-- Item 1 -->
+<div class="flex items-center justify-between gap-4 bg-surface-dark/20 border border-border-dark/50 rounded-xl p-4 hover:border-border-dark transition-colors">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-border-dark flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-success">check_circle</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Production Deployment</p>
+<p class="text-text-secondary text-xs">Build #402 completed successfully</p>
+</div>
+</div>
+<span class="text-text-secondary text-xs whitespace-nowrap">2m ago</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between gap-4 bg-surface-dark/20 border border-border-dark/50 rounded-xl p-4 hover:border-border-dark transition-colors">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-border-dark flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">commit</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">New Commit</p>
+<p class="text-text-secondary text-xs">feat: update user dashboard styling</p>
+</div>
+</div>
+<span class="text-text-secondary text-xs whitespace-nowrap">15m ago</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between gap-4 bg-surface-dark/20 border border-border-dark/50 rounded-xl p-4 hover:border-border-dark transition-colors">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-border-dark flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-orange-400">warning</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">High Latency Alert</p>
+<p class="text-text-secondary text-xs">US-East-1 region experiencing delays</p>
+</div>
+</div>
+<span class="text-text-secondary text-xs whitespace-nowrap">1h ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- TOAST NOTIFICATION CONTAINER -->
+<!-- Positioned fixed at bottom right, z-index high to float above everything -->
+<div class="fixed bottom-0 right-0 p-6 z-[100] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+<!-- Toast 1: Detailed Success Message -->
+<!-- pointer-events-auto allows interaction with buttons/close -->
+<div class="pointer-events-auto flex w-full flex-col gap-1 rounded-lg border border-border-dark bg-[#141b26] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] animate-slide-up ring-1 ring-white/5">
+<div class="flex items-start gap-3">
+<!-- Icon -->
+<div class="mt-0.5 shrink-0">
+<span class="material-symbols-outlined text-success text-[22px] fill">check_circle</span>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col gap-1">
+<h4 class="text-sm font-semibold text-white leading-tight">Project added successfully</h4>
+<p class="text-xs text-text-secondary leading-normal">Repository 'frontend-core' has been synced and is ready for deployment.</p>
+</div>
+<!-- Close Button -->
+<button class="shrink-0 -mr-2 -mt-2 p-2 text-text-secondary hover:text-white transition-colors rounded-md hover:bg-white/5">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<!-- Toast 2: Simple Action Message (Stacked below/above depending on order) -->
+<div class="pointer-events-auto flex w-full items-center gap-3 rounded-lg border border-border-dark bg-[#141b26] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] animate-slide-up ring-1 ring-white/5" style="animation-delay: 150ms;">
+<!-- Icon -->
+<span class="material-symbols-outlined text-success text-[22px] fill">check_circle</span>
+<!-- Message -->
+<p class="flex-1 text-sm font-semibold text-white">Settings saved</p>
+<!-- Action Button -->
+<button class="text-xs font-medium text-white hover:text-success transition-colors px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 border border-white/5">
+                Undo
+            </button>
+<!-- Close Button -->
+<button class="shrink-0 text-text-secondary hover:text-white transition-colors p-0.5">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+</body></html>

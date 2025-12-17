@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Settings &amp; Privacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+              "surface": "#1A2230",
+              "border": "#232f48",
+            },
+            fontFamily: {
+              "display": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-72 bg-background-dark border-r border-border hidden md:flex flex-col shrink-0">
+<div class="h-16 flex items-center px-6 border-b border-border">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 flex items-center justify-center rounded-lg bg-primary/20 text-primary">
+<svg fill="none" height="20" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight">DevPulse</span>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2 p-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-border transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-border transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors">folder_open</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-border transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors">notifications</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-border transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-white transition-colors">credit_card</span>
+<span class="text-sm font-medium">Billing</span>
+</a>
+<div class="my-2 border-t border-border"></div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined material-symbols-filled">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-border">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="User avatar abstract gradient" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAB9PA8JR842PYVd32rks98BBOmzVI2GUmcivdF3zvryz-FweH1aRaCT3Vp7yOcKx4H8i1Rmi5_JKQfltpqCZF9lEreuHjdQIBMmciGRTRpLHeWxBQuGVS5D_PYoHLhFK1JA-fURM-AAPLz_Xhra8v4ZbD3wM2I41Rr9cPfknQPtsCsIluq5g0MQsEloL8q9yn1PJfcAeCCt2kkxmpOGSnZVsVWESGsqNXpGT9XpkZ3QmGrAN7svwEHTSsA-7jkScM4fwfgSvGky2Eg')"></div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Alex Dev</span>
+<span class="text-xs text-slate-400">Pro Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col relative overflow-hidden bg-background-dark">
+<!-- Top Mobile Header (visible only on small screens) -->
+<header class="md:hidden h-16 border-b border-border flex items-center justify-between px-4 bg-background-dark shrink-0">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 flex items-center justify-center rounded-lg bg-primary/20 text-primary">
+<svg fill="none" height="20" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-lg font-bold">DevPulse</span>
+</div>
+<button class="text-white p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto">
+<div class="max-w-[1000px] mx-auto w-full p-6 md:p-10 flex flex-col gap-8">
+<!-- Breadcrumbs & Heading -->
+<div class="flex flex-col gap-6">
+<nav class="flex items-center text-sm font-medium text-slate-400">
+<a class="hover:text-white transition-colors" href="#">Home</a>
+<span class="mx-2">/</span>
+<span class="text-white">Settings</span>
+</nav>
+<div>
+<h1 class="text-3xl font-bold text-white tracking-tight mb-2">Settings &amp; Privacy</h1>
+<p class="text-slate-400 text-lg">Manage your account settings, integrations, and data preferences.</p>
+</div>
+</div>
+<!-- Account Card -->
+<section class="rounded-xl border border-border bg-surface overflow-hidden">
+<div class="p-6 border-b border-border">
+<h2 class="text-xl font-semibold text-white">Account</h2>
+<p class="text-sm text-slate-400 mt-1">Update your personal information and plan details.</p>
+</div>
+<div class="p-6 grid gap-6 md:grid-cols-2">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-300">Email Address</label>
+<div class="relative">
+<span class="absolute left-3 top-2.5 text-slate-500 material-symbols-outlined text-[20px]">mail</span>
+<input class="w-full bg-background-dark border border-border rounded-lg py-2.5 pl-10 pr-4 text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-not-allowed opacity-75" disabled="" type="email" value="alex.dev@example.com"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-300">Current Plan</label>
+<div class="flex items-center h-[42px]">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/20 text-primary border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                    Developer Pro
+                                </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Connected Integrations -->
+<section class="rounded-xl border border-border bg-surface overflow-hidden">
+<div class="p-6 border-b border-border">
+<h2 class="text-xl font-semibold text-white">Connected Integrations</h2>
+<p class="text-sm text-slate-400 mt-1">Manage your connections to third-party services.</p>
+</div>
+<div class="divide-y divide-border">
+<!-- GitHub Row -->
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="size-12 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+<!-- GitHub Icon Placeholder -->
+<img alt="GitHub Logo" class="w-7 h-7 filter invert opacity-90" data-alt="GitHub Logo White" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJgezbccE8gmaEc3naQDkHm2z95mCvPC2JdaqwzzpeDO_8b99tb4_5OjWSgo3_yD2cPBVCX_vZGagFShaWWekl9D-GsFUe8Ls0t7SpqCDbC9W9EAYu-W6mg2qSkbI0Wwh_4SBSLb8uKscLz8gOZ8bDm5A7hxtkkexx8pmtyN5s945QKAq9ys29aKwYjxDHuSmzivYJ1LC6uVm1iTQXkzaf7nrr6cVqh6JTuHdV31jesJB5q7BsnsMop1fwaDgOZSB0l1WgWd668bMr"/>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-medium text-white">GitHub</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Connected</span>
+</div>
+<p class="text-sm text-slate-400">Read-only access to public and private repositories.</p>
+</div>
+</div>
+<button class="px-4 py-2 text-sm font-medium text-rose-400 border border-rose-500/30 rounded-lg hover:bg-rose-500/10 transition-colors focus:ring-2 focus:ring-rose-500/20 w-full md:w-auto">
+                                Disconnect
+                            </button>
+</div>
+<!-- Vercel Row -->
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="size-12 rounded-lg bg-black flex items-center justify-center border border-white/10 shrink-0">
+<svg class="w-6 h-6 text-white" fill="none" viewbox="0 0 1155 1000" xmlns="http://www.w3.org/2000/svg">
+<path d="M577.344 0L1154.69 1000H0L577.344 0Z" fill="white"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-medium text-white">Vercel</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Connected</span>
+</div>
+<p class="text-sm text-slate-400">Access to deployment status and build logs.</p>
+</div>
+</div>
+<button class="px-4 py-2 text-sm font-medium text-rose-400 border border-rose-500/30 rounded-lg hover:bg-rose-500/10 transition-colors focus:ring-2 focus:ring-rose-500/20 w-full md:w-auto">
+                                Disconnect
+                            </button>
+</div>
+</div>
+</section>
+<!-- Data & Privacy -->
+<section class="rounded-xl border border-border bg-surface overflow-hidden">
+<div class="p-6 border-b border-border">
+<h2 class="text-xl font-semibold text-white">Data &amp; Privacy</h2>
+<p class="text-sm text-slate-400 mt-1">Control how your data is stored and handled.</p>
+</div>
+<div class="p-6">
+<div class="bg-primary/5 border border-primary/10 rounded-lg p-5 mb-8">
+<h4 class="text-sm font-semibold text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">security</span>
+                                Security Summary
+                            </h4>
+<ul class="space-y-3">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300">We only request <strong>read-only access</strong> to your repositories.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300"><strong>No source code</strong> is ever stored on our servers.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
+<span class="text-sm text-slate-300">All access tokens are <strong>AES-256 encrypted</strong> at rest.</span>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-8 border-t border-border">
+<h3 class="text-lg font-medium text-white mb-2">Danger Zone</h3>
+<p class="text-sm text-slate-400 mb-6">Irreversible actions related to your data storage.</p>
+<div class="flex items-center justify-between p-4 rounded-lg border border-rose-900/30 bg-rose-950/10">
+<div>
+<h4 class="text-sm font-semibold text-rose-200">Delete all stored metadata</h4>
+<p class="text-xs text-rose-300/60 mt-0.5">This will remove all cached commit history and deployment logs.</p>
+</div>
+<button class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-rose-900/20">
+                                    Delete Metadata
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<footer class="flex justify-center py-8 text-slate-600 text-sm">
+<p>© 2024 DevPulse Inc. All rights reserved.</p>
+</footer>
+</div>
+</div>
+</main>
+</body></html>

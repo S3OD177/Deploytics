@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse Overview Dashboard</title>
+<!-- Google Fonts: Plus Jakarta Sans & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col w-72 h-full bg-[#f8f9fc] dark:bg-[#151c2b] border-r border-[#e7ebf3] dark:border-[#2a3447]">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 bg-primary/10 flex items-center justify-center text-primary" data-alt="DevPulse Logo">
+<span class="material-symbols-outlined text-2xl">ssid_chart</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-xl font-bold leading-normal">DevPulse</h1>
+</div>
+<div class="flex flex-col gap-2 px-4 flex-1">
+<!-- Overview (Active) -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 text-primary group transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<p class="text-sm font-bold leading-normal">Overview</p>
+</a>
+<!-- Projects -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1e2736] transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">folder_open</span>
+<p class="text-sm font-medium leading-normal">Projects</p>
+</a>
+<!-- Alerts -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1e2736] transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<p class="text-sm font-medium leading-normal">Alerts</p>
+</a>
+<!-- Billing -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1e2736] transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">credit_card</span>
+<p class="text-sm font-medium leading-normal">Billing</p>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#1e2736] transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+<div class="p-6 border-t border-[#e7ebf3] dark:border-[#2a3447]">
+<div class="flex items-center gap-3 px-3 py-2 cursor-pointer hover:opacity-80">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 bg-slate-200" data-alt="User Avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8v3jw8DRf52qpHFGcdPqJoebfZq8MXxu1AY2gNxns5V1nwZCGdiGNb1k2aYX6GBFF_lLdRa5KecJQHgT6O1SqXqsSsEue_MIO1498yuBnBgMKVhgrl9KGFtZishbTJ38Afl4MJ_O__XMwrg3pjj4GrQSbJFci0dlXhqj653UaGrnWYDsQMA_W0jPb5sEEyDXp2qX7EIwlDLs02IDcWMTNeJ1qQUGK3K1txShKstV_Fm0QwlWgL3lqGA5Me9xE13k4yUj65iQDXpEy");'></div>
+<div class="flex flex-col">
+<p class="text-slate-900 dark:text-white text-sm font-bold">Alex Morgan</p>
+<p class="text-slate-500 text-xs">Lead Engineer</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col h-full relative overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between border-b border-[#e7ebf3] dark:border-[#2a3447] px-6 lg:px-10 py-4 bg-white dark:bg-[#101622] z-10">
+<div class="flex items-center gap-4 lg:gap-8 flex-1">
+<!-- Mobile Menu Trigger -->
+<button class="lg:hidden p-2 text-slate-500">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="hidden md:block text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Dashboard</h2>
+<label class="flex flex-col min-w-40 h-10 w-full max-w-sm ml-auto md:ml-0">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-[#f6f6f8] dark:bg-[#1e2736]">
+<div class="text-[#4c669a] flex items-center justify-center pl-4 pr-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full flex-1 bg-transparent text-slate-900 dark:text-white focus:outline-none placeholder:text-[#4c669a] text-sm" placeholder="Search projects, logs, or commits..."/>
+</div>
+</label>
+</div>
+<div class="flex items-center justify-end gap-4 ml-4">
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-[#f6f6f8] dark:hover:bg-[#1e2736] text-slate-600 dark:text-slate-400 transition-colors relative">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border border-white dark:border-[#101622]"></span>
+</button>
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-[#f6f6f8] dark:hover:bg-[#1e2736] text-slate-600 dark:text-slate-400 transition-colors">
+<span class="material-symbols-outlined text-[24px]">help</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Page Content -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Page Heading -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Overview</h1>
+<p class="text-slate-500 dark:text-slate-400">Welcome back, here's what's happening today.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm transition-all shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>New Project</span>
+</button>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+<div class="flex flex-col gap-1 rounded-xl p-5 border border-[#cfd7e7] dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-medium">Total Projects</p>
+<span class="material-symbols-outlined text-slate-400">folder</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-none">12</p>
+<span class="text-green-600 text-xs font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 2 this week
+                                </span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-5 border border-[#cfd7e7] dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-medium">Active Builds</p>
+<span class="material-symbols-outlined text-primary animate-pulse">refresh</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-none">3</p>
+<span class="text-primary text-xs font-bold mb-1">In progress</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-5 border border-[#cfd7e7] dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-medium">Failed Deployments</p>
+<span class="material-symbols-outlined text-red-500">error</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-none">1</p>
+<span class="text-red-600 text-xs font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 1 today
+                                </span>
+</div>
+</div>
+</div>
+<!-- Project Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1: Success -->
+<div class="flex flex-col rounded-xl border border-slate-200 dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="p-5 flex flex-col h-full">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-sm" data-alt="Blue and indigo gradient icon">
+<span class="material-symbols-outlined">code</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Frontend-App</h3>
+<p class="text-slate-500 text-xs mt-0.5">production</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/30 px-2.5 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-600/20">
+<span class="size-1.5 rounded-full bg-green-600 mr-1.5"></span> Success
+                                        </span>
+</div>
+</div>
+<div class="mb-4">
+<div class="text-slate-500 text-xs mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span> 5m ago
+                                    </div>
+<div class="bg-[#f6f6f8] dark:bg-[#1e2736] rounded-lg p-3 border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">commit</span>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate font-mono">fix: navbar spacing alignment</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-5 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAXEqqKK4N_fuMJ5JhIIYvXJJQWLvg5aymRh6f3jevjfmBP8ngpi7jbrsyX04TYlXtyEUNrXyw39Ab7IJbRfBf-R3tITMR9VUmdhq-L2h1MpnZwr-T9iLx4oNfFA9qE1xDpShYCEoJD9m4LXlDU68tWiSU4QV76UK4FqxYbNQufjmSXgTrioByUoX00d7-PpnjGDEOxzy4bR0rc01CxpwTetHsk2StaA1sYCtxSjnvxfJihGMS2U9pxwv8F9mp00bH1HKL3OQxMrQP_")'></div>
+<span class="text-xs text-slate-500 font-medium">@alex</span>
+</div>
+<code class="text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-mono">8f3a21</code>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-[16px] text-green-500">ecg_heart</span>
+                                        Health: 98%
+                                    </div>
+<div class="flex gap-2">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications_none</span>
+</button>
+<button class="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
+                                            View Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Failed -->
+<div class="flex flex-col rounded-xl border border-slate-200 dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="p-5 flex flex-col h-full">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white shadow-sm" data-alt="Orange and pink gradient icon">
+<span class="material-symbols-outlined">dns</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Backend-API</h3>
+<p class="text-slate-500 text-xs mt-0.5">staging</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-full bg-red-50 dark:bg-red-900/30 px-2.5 py-1 text-xs font-bold text-red-700 dark:text-red-400 ring-1 ring-inset ring-red-600/20">
+<span class="size-1.5 rounded-full bg-red-600 mr-1.5"></span> Failed
+                                        </span>
+</div>
+</div>
+<div class="mb-4">
+<div class="text-slate-500 text-xs mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span> 1h ago
+                                    </div>
+<div class="bg-[#f6f6f8] dark:bg-[#1e2736] rounded-lg p-3 border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">commit</span>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate font-mono">feat: add user endpoints</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-5 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1PCxplZggoQBNltysh3vHkvekQlEgXwztvrYyOoww1V_FDi-uKqUPkz0s0ldLqblReUsk4V-2LwQFAV3liIUQPI8-KSZQAXodP80IGKSA-P7udcziwaE474JCsHqANqkMk2dqgLk9eJHtPNGhBzHhtkBUGCb8J5Pi1ATOu_zeAtpntDO-M1nTRNCFe28sdfGybuDeO09SBhdHpor0IOveLwdgOUzRe3-cPh1n3ia7zd-gyuolJ9w0aIkEp0A93VkcfxVNc0-HCi6s")'></div>
+<span class="text-xs text-slate-500 font-medium">@sarah</span>
+</div>
+<code class="text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-mono">c4b29f</code>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-[16px] text-yellow-500">ecg_heart</span>
+                                        Health: 45%
+                                    </div>
+<div class="flex gap-2">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications_none</span>
+</button>
+<button class="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
+                                            View Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Building -->
+<div class="flex flex-col rounded-xl border border-slate-200 dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="p-5 flex flex-col h-full">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm" data-alt="Emerald and teal gradient icon">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Worker-Service</h3>
+<p class="text-slate-500 text-xs mt-0.5">development</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 text-xs font-bold text-blue-700 dark:text-blue-400 ring-1 ring-inset ring-blue-600/20">
+<span class="size-1.5 rounded-full bg-blue-600 mr-1.5 animate-pulse"></span> Building
+                                        </span>
+</div>
+</div>
+<div class="mb-4">
+<div class="text-slate-500 text-xs mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 30s ago
+                                    </div>
+<div class="bg-[#f6f6f8] dark:bg-[#1e2736] rounded-lg p-3 border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">commit</span>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate font-mono">chore: update dependencies</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px] text-white" data-alt="Bot avatar">🤖</div>
+<span class="text-xs text-slate-500 font-medium">@bot</span>
+</div>
+<code class="text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-mono">1a2b3c</code>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-[16px] text-green-500">ecg_heart</span>
+                                        Health: 100%
+                                    </div>
+<div class="flex gap-2">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications_none</span>
+</button>
+<button class="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
+                                            View Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Success -->
+<div class="flex flex-col rounded-xl border border-slate-200 dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="p-5 flex flex-col h-full">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center text-white shadow-sm" data-alt="Purple and fuchsia gradient icon">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Analytics-Core</h3>
+<p class="text-slate-500 text-xs mt-0.5">production</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-900/30 px-2.5 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-600/20">
+<span class="size-1.5 rounded-full bg-green-600 mr-1.5"></span> Success
+                                        </span>
+</div>
+</div>
+<div class="mb-4">
+<div class="text-slate-500 text-xs mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span> 3h ago
+                                    </div>
+<div class="bg-[#f6f6f8] dark:bg-[#1e2736] rounded-lg p-3 border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">commit</span>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate font-mono">perf: optimize query aggregation</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-5 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGQPwMm0GGulCfUR3pks7W71_noLC4gq-xkgSJ2Av_5F-C17cTLzLiDnkYvF80yIuzxsV8VEc7wrBfJU1PhdykHizDs1ncm51-MVJvF0UzGIw_wdDOOp5FPgAoz_EMCQQvHHJq7kgfbByfWYoMJElFY3Ydayqi03wnD2H3Dv5BBuiBkvl1VmYOJJE5NTfJaG-UxLwAYJ8N16bMANdx1fnXtYPlnJB72LBQecpcoKWf3rDqdS_SB-WXpV9lvrdVHQi-JNBV-NReGN_j")'></div>
+<span class="text-xs text-slate-500 font-medium">@james</span>
+</div>
+<code class="text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-mono">e12f90</code>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-[16px] text-green-500">ecg_heart</span>
+                                        Health: 99%
+                                    </div>
+<div class="flex gap-2">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications_none</span>
+</button>
+<button class="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
+                                            View Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5: Stopped/Warning -->
+<div class="flex flex-col rounded-xl border border-slate-200 dark:border-[#2a3447] bg-white dark:bg-[#151c2b] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="p-5 flex flex-col h-full">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-gray-500 to-slate-600 flex items-center justify-center text-white shadow-sm" data-alt="Gray gradient icon">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg leading-tight">Legacy-Auth</h3>
+<p class="text-slate-500 text-xs mt-0.5">archived</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-bold text-slate-600 dark:text-slate-400 ring-1 ring-inset ring-slate-500/20">
+<span class="size-1.5 rounded-full bg-slate-400 mr-1.5"></span> Stopped
+                                        </span>
+</div>
+</div>
+<div class="mb-4">
+<div class="text-slate-500 text-xs mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span> 2d ago
+                                    </div>
+<div class="bg-[#f6f6f8] dark:bg-[#1e2736] rounded-lg p-3 border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">commit</span>
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate font-mono">chore: decommission server</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-5 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAz9v_eboVw59zAgh7VmyJLqNK_cMhmLz0cGxGSUlEPYEtI_APT1O99yVlh95MHcjjIDvWjZ7DVkQqRc5qYjScgGReEJDQ96K3uyGBd1o2BFNFdzlfOnB2MrIqobyAOSKkh1A4vyvtMa-_S_c0A9urqO8_P9STQbOKoeoXlH-d1eTmO1o-JNtW8YPUUE7-unIWlmuJxbbltKl7DHnUryBszK0ZpYa_8bnINWWCJZMtBo-CqWTNnPtGkQT-9UUbCywVUG4FByRAMzWUv")'></div>
+<span class="text-xs text-slate-500 font-medium">@mike</span>
+</div>
+<code class="text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-mono">d91a02</code>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-[16px] text-slate-400">offline_bolt</span>
+                                        Health: --
+                                    </div>
+<div class="flex gap-2">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications_none</span>
+</button>
+<button class="text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+                                            View Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

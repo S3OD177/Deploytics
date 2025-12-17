@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Project Detail View</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622", // Main app bg
+                        "card-dark": "#111722", // Sidebar/Nav bg
+                        "card-surface": "#232f48", // Element bg
+                        "border-dark": "#232f48",
+                        "muted": "#92a4c9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111722; }
+        ::-webkit-scrollbar-thumb { background: #232f48; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334466; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 flex flex-col bg-card-dark border-r border-border-dark hidden md:flex">
+<div class="h-16 flex items-center px-6 border-b border-border-dark">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-primary" style="font-size: 28px;">monitor_heart</span>
+<h1 class="text-xl font-bold tracking-tight">DevPulse</h1>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto py-6 px-3 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-card-surface transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-white" href="#">
+<span class="material-symbols-outlined fill">folder</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-card-surface transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-card-surface transition-colors" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="text-sm font-medium">Billing</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-card-surface transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-border-dark">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-card-surface/50 border border-border-dark cursor-pointer hover:bg-card-surface">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="User profile avatar gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGqXezNWJ0iT4ipXLBZ6DTIPalmt7NTR8db75S_wlqDLjeXTa6pE39f7M865XNxOgwZjXui9BC2-TnexxV6zF38PvaqlvGawsv-ppOgygiqER9tr6VH05sVKnUmWvGdKYDD0mpFmUIqhnOalxzUpFWG32EFZ5IAnkxBSUAdDKNXbxe9gewkzM19oDZXFzT8aV7bXD4IJcO0_15m1-YdeQ6ySDDeWyfH5_7OPXYdqgTxPsvNZ5qMgeb64VTUOAxlZeuN8xQZ2XCbafq");'></div>
+<div class="flex flex-col overflow-hidden">
+<p class="text-sm font-medium text-white truncate">Jane Doe</p>
+<p class="text-xs text-muted truncate">jane@devpulse.io</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 bg-background-dark overflow-hidden relative">
+<!-- Top Navbar -->
+<header class="h-16 flex items-center justify-between px-6 border-b border-border-dark bg-card-dark shrink-0 z-10">
+<!-- Mobile Menu Trigger -->
+<button class="md:hidden text-muted hover:text-white mr-4">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-sm">
+<span class="text-muted">Projects</span>
+<span class="text-muted">/</span>
+<span class="text-white font-medium">DevPulse-Web</span>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted material-symbols-outlined" style="font-size: 20px;">search</span>
+<input class="h-9 w-64 rounded-lg bg-card-surface border-none pl-10 pr-4 text-sm text-white placeholder-muted focus:ring-1 focus:ring-primary" placeholder="Search..." type="text"/>
+</div>
+<button class="relative text-muted hover:text-white">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-primary rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Scrollable Page Content -->
+<div class="flex-1 overflow-y-auto p-6 lg:px-10 pb-20">
+<div class="max-w-6xl mx-auto flex flex-col gap-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+<h2 class="text-3xl font-bold text-white tracking-tight">DevPulse-Web</h2>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+<span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        Healthy
+                                    </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-500 border border-blue-500/20">
+<span class="material-symbols-outlined" style="font-size: 14px;">rocket_launch</span>
+                                        Deployed
+                                    </span>
+</div>
+</div>
+<p class="text-muted text-sm max-w-2xl">Main web dashboard application for the DevPulse platform. Handles user authentication, project visualization, and real-time alerts.</p>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<button class="h-9 px-4 rounded-lg border border-border-dark bg-transparent text-white text-sm font-medium hover:bg-card-surface flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">code</span>
+                                Open Repo
+                            </button>
+<button class="h-9 px-4 rounded-lg border border-border-dark bg-transparent text-white text-sm font-medium hover:bg-card-surface flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">open_in_new</span>
+                                View Live
+                            </button>
+</div>
+</div>
+<!-- Status Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Last Deployment Card -->
+<div class="bg-card-dark rounded-xl border border-border-dark p-5 flex flex-col justify-between hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div>
+<h3 class="text-sm font-medium text-muted">Last Deployment</h3>
+<p class="text-white font-semibold">Production #420</p>
+</div>
+</div>
+<span class="text-xs text-emerald-500 font-medium bg-emerald-500/10 px-2 py-1 rounded">Success</span>
+</div>
+<div class="flex items-center justify-between text-xs text-muted border-t border-border-dark pt-3 mt-1">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">schedule</span>
+                                    2h ago
+                                </span>
+<span>Duration: 4m 12s</span>
+</div>
+</div>
+<!-- Last Commit Card -->
+<div class="bg-card-dark rounded-xl border border-border-dark p-5 flex flex-col justify-between hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#232f48] flex items-center justify-center text-white">
+<span class="material-symbols-outlined">commit</span>
+</div>
+<div>
+<h3 class="text-sm font-medium text-muted">Last Commit</h3>
+<p class="text-white font-semibold line-clamp-1" title="Fix: Auth session timeout handling">Fix: Auth session timeout...</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-3 pl-13">
+<div class="size-5 rounded-full bg-cover" data-alt="Author avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAmgauhs1lMK1xc8vxZ7gSfWwYy24sfSL5Pj-WKA3P5_Y3-F5OqCqcLMWv6BGVW_1LKX5sp3asIeI8TD9v5zGF-cL1J8qGOdRk2NAQnG5PTUIFkpHDcn0QEcVF2w9yNInYGNUeaemYgulUReGp78mQudZkFRjgy010eGYEWjX_zBnmd6391dV8Ee4O2eYM6FQtzql_RacxCATFOZG0WeF4gdyJ_cB1fEQRrZ5vYhtRZACAzLnwK4Iar4IhJ9r0RhYeBRaJx52Cq5Qf1");'></div>
+<span class="text-xs text-white">Sarah Jenkins</span>
+</div>
+<div class="flex items-center justify-between text-xs text-muted border-t border-border-dark pt-3 mt-1">
+<span class="font-mono bg-card-surface px-1.5 py-0.5 rounded text-[10px] text-white">a1b2c3d</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">history</span>
+                                    35m ago
+                                </span>
+</div>
+</div>
+<!-- Health Card -->
+<div class="bg-card-dark rounded-xl border border-border-dark p-5 flex flex-col justify-between hover:border-primary/50 transition-colors group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined">ecg_heart</span>
+</div>
+<div>
+<h3 class="text-sm font-medium text-muted">System Health</h3>
+<p class="text-white font-semibold">99.9% Uptime</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-muted group-hover:text-white transition-colors cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center justify-between text-xs text-muted border-t border-border-dark pt-3 mt-1">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">speed</span>
+                                    Avg Latency
+                                </span>
+<span class="text-white font-medium">120ms</span>
+</div>
+</div>
+</div>
+<!-- Timeline / Activity Section -->
+<div class="flex flex-col gap-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-dark pb-1">
+<h3 class="text-lg font-semibold text-white">Activity Log</h3>
+<!-- Tabs -->
+<div class="flex p-1 bg-card-surface rounded-lg self-start sm:self-auto">
+<button class="px-4 py-1.5 rounded-md text-sm font-medium bg-card-dark text-white shadow-sm transition-all">All</button>
+<button class="px-4 py-1.5 rounded-md text-sm font-medium text-muted hover:text-white transition-all">Deploys</button>
+<button class="px-4 py-1.5 rounded-md text-sm font-medium text-muted hover:text-white transition-all">Commits</button>
+<button class="px-4 py-1.5 rounded-md text-sm font-medium text-muted hover:text-white transition-all">Alerts</button>
+</div>
+</div>
+<!-- Timeline List -->
+<div class="flex flex-col relative pl-2">
+<!-- Timeline Item 1 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full border-2 border-background-dark bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0 z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">check</span>
+</div>
+<div class="w-px h-full bg-border-dark my-1 group-last:hidden"></div>
+</div>
+<div class="flex-1 pb-8">
+<div class="bg-card-dark border border-border-dark rounded-lg p-4 hover:bg-card-surface/30 transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-semibold text-white">Deployment Succeeded</h4>
+<span class="text-xs text-muted">2 hours ago</span>
+</div>
+<p class="text-sm text-muted mb-3">Successfully deployed to production environment (us-east-1).</p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-xs text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                                v2.4.0
+                                            </span>
+<span class="text-xs text-muted">Triggered by merge</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full border-2 border-background-dark bg-primary/20 text-primary flex items-center justify-center shrink-0 z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">rocket_launch</span>
+</div>
+<div class="w-px h-full bg-border-dark my-1 group-last:hidden"></div>
+</div>
+<div class="flex-1 pb-8">
+<div class="bg-card-dark border border-border-dark rounded-lg p-4 hover:bg-card-surface/30 transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-semibold text-white">Deployment Started</h4>
+<span class="text-xs text-muted">2 hours ago</span>
+</div>
+<p class="text-sm text-muted">Deploy process initiated for commit <span class="font-mono text-white text-xs">a1b2c3d</span>.</p>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full border-2 border-background-dark bg-[#232f48] text-white flex items-center justify-center shrink-0 z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">call_merge</span>
+</div>
+<div class="w-px h-full bg-border-dark my-1 group-last:hidden"></div>
+</div>
+<div class="flex-1 pb-8">
+<div class="bg-card-dark border border-border-dark rounded-lg p-4 hover:bg-card-surface/30 transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-semibold text-white">PR Merged #842</h4>
+<span class="text-xs text-muted">2 hours ago</span>
+</div>
+<p class="text-sm text-muted mb-2">"Fix: Auth session timeout handling" was merged into <code class="bg-card-surface px-1 py-0.5 rounded text-xs text-white">main</code></p>
+<div class="flex items-center gap-2">
+<div class="size-4 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAPjTsCxxYg8mnsJ545Qo4GdEfoa99R5nU-VlyiwRMAsTh0MpQx9RVd7x0aS6OmImfSwljzsn7RxdM2cAMCwBX6GMqQKUMh-lVbu4xkc7FgccDRcjamMRcnNRnilBMq883C93PFm919K82Prdni2RPY7jiqrNxzgmojtIRnHb11FIZwU2bf-U2lsGKP2hJTv_oNGOhuKXdqZI3NRuwCK1c1Ge24b-l-Tnc14Yr7tcgy3jqwu5dbdZgJGCXOpUk3gxxU9xcYeQ6IjVZI");'></div>
+<span class="text-xs text-muted">Sarah Jenkins</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 4 (Alert) -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full border-2 border-background-dark bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0 z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">warning</span>
+</div>
+<div class="w-px h-full bg-border-dark my-1 group-last:hidden"></div>
+</div>
+<div class="flex-1 pb-8">
+<div class="bg-card-dark border border-border-dark rounded-lg p-4 hover:bg-card-surface/30 transition-colors cursor-pointer border-l-amber-500 border-l-4">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-semibold text-white">High Memory Usage Warning</h4>
+<span class="text-xs text-muted">5 hours ago</span>
+</div>
+<p class="text-sm text-muted">Pod <code class="text-xs font-mono text-white bg-card-surface px-1 py-0.5 rounded">worker-node-4a</code> exceeded 85% memory allocation.</p>
+</div>
+</div>
+</div>
+<!-- Timeline Item 5 (Commit) -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full border-2 border-background-dark bg-[#232f48] text-muted flex items-center justify-center shrink-0 z-10">
+<span class="material-symbols-outlined" style="font-size: 16px;">commit</span>
+</div>
+<div class="w-px h-full bg-border-dark my-1 group-last:hidden"></div>
+</div>
+<div class="flex-1 pb-4">
+<div class="bg-card-dark border border-border-dark rounded-lg p-4 hover:bg-card-surface/30 transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-semibold text-white">New Commit</h4>
+<span class="text-xs text-muted">6 hours ago</span>
+</div>
+<p class="text-sm text-muted mb-2">Update dependency versions for security patch</p>
+<div class="flex items-center gap-3">
+<span class="font-mono bg-card-surface px-1.5 py-0.5 rounded text-[10px] text-white">f9e8d7c</span>
+<div class="flex items-center gap-1.5">
+<div class="size-4 rounded-full bg-cover" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGr7p7mAfhjOarpRjixWuIdUq4k007-5wGpN7gMXATPnulfXai-6995DOCpEbdg7uXGqGiZ-fcexFOPm-a7Ckgc1UNr9Q2fXmlPSS5gOEiWpPgWVdoLknjyYb0IZPyM91-NJ60GxnARI9-L_NXv6ZMcH2f-dkUG39in3OX4MMRpDdjMgLLgU2_QUvxrKxidx1u0lMef-Or-Wk767J7G_cP8taD4Ff4nfTZNANX_9ykZVfqCPqLfKYquckBQDfd7v_6PR9wmhFUL4V-");'></div>
+<span class="text-xs text-muted">Alex Chen</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Load More -->
+<div class="flex justify-center pt-2">
+<button class="text-sm text-muted hover:text-white flex items-center gap-2 transition-colors">
+                                Load older events
+                                <span class="material-symbols-outlined" style="font-size: 16px;">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

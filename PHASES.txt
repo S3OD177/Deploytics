@@ -1,0 +1,52 @@
+PHASE 0 — BOOTSTRAP
+- [x] Initialize Next.js App Router TypeScript project
+- [x] Install Tailwind and configure dark-only theme
+- [x] Install shadcn/ui (init) and lucide-react
+- [x] Add core shadcn components (Button, Card, Badge, Tabs, Table, etc.)
+- [x] Create app shell layout: Sidebar + Topbar + content area (matching Stitch design)
+- [x] Create placeholder routes/pages: overview, projects, alerts, billing, settings
+- [x] Commit: "chore: bootstrap nextjs + shadcn dark shell"
+
+PHASE 1 — STITCH → SHADCN UI CONVERSION (PIXEL FIDELITY)
+- [ ] Import Stitch export into /reference directory
+- [ ] Implement Overview page (project cards, status badges)
+- [ ] Implement Project Detail page (header, status cards, timeline, tabs)
+- [ ] Implement Alerts page
+- [ ] Implement Billing page (pricing cards + cost awareness placeholder)
+- [ ] Implement Settings page (integrations, privacy)
+- [ ] Ensure responsive behavior (desktop + mobile)
+- [ ] Create UI states (loading, empty, error)
+- [ ] Update DESIGN_FIDELITY.md with page-specific checks
+- [ ] Commit: "feat(ui): stitch design implemented with shadcn (phase 1)"
+
+PHASE 2 — SUPABASE FOUNDATION (AUTH + DB + RLS)
+- [ ] Create Supabase client/server helpers (client.ts, server.ts, middleware)
+- [ ] Implement auth screens: login + callback
+- [ ] Create SQL migrations (accounts, projects, integrations, project_status, events, alert_rules)
+- [ ] Enable RLS on all tables
+- [ ] Write RLS policies for tenant isolation
+- [ ] Add .env.example with required envs
+- [ ] Update UI pages to load real data (projects list)
+- [ ] Commit: "feat(backend): supabase auth + schema + rls"
+
+PHASE 3 — READ-ONLY INTEGRATIONS (GITHUB + VERCEL) + STATUS
+- [ ] Implement "Connect GitHub" flow (read-only)
+- [ ] Implement "Connect Vercel" flow (read-only)
+- [ ] Create API routes: /api/webhooks/vercel, /api/jobs/github/poll
+- [ ] Implement webhook/poll logic to update DB
+- [ ] Implement Supabase realtime changes in UI
+- [ ] Commit: "feat(integrations): vercel webhook + github polling + realtime ui"
+
+PHASE 4 — COST AWARENESS (BILLING INSIGHTS)
+- [ ] Implement Billing page cost module (summary cards, trend, risk)
+- [ ] Create metrics model/table if needed
+- [ ] Commit: "feat(billing): cost awareness insights"
+
+PHASE 5 — POLISH, QA, DOCS, DEPLOY
+- [ ] Add error handling, empty states, loading states globally
+- [ ] Add basic E2E sanity checks
+- [ ] Create README (setup, env vars, migrations, webhooks)
+- [ ] Ensure lint/build passes
+- [ ] Push to GitHub (main branch)
+- [ ] Deploy to Vercel and verify
+- [ ] Final commit: "chore: release v1"

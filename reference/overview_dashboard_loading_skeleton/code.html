@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Overview Dashboard Loading</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "skeleton": "#232f48", 
+                        "skeleton-light": "#324467"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Modern scrollbar styling for dark mode */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #324467; 
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display overflow-hidden antialiased">
+<div class="relative flex h-screen w-full overflow-hidden">
+<!-- Sidebar Skeleton -->
+<aside class="hidden lg:flex w-72 flex-col border-r border-[#232f48] bg-background-dark h-full shrink-0">
+<div class="flex flex-col h-full p-4 gap-6">
+<!-- App Logo/Title Skeleton -->
+<div class="flex items-center gap-3 px-2 py-1">
+<div class="h-10 w-10 shrink-0 rounded-full bg-skeleton animate-pulse"></div>
+<div class="h-5 w-24 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Nav Items Skeleton -->
+<div class="flex flex-col gap-2 w-full">
+<!-- Item 1 (Simulated Active) -->
+<div class="flex items-center gap-3 px-3 py-2 rounded-xl bg-skeleton/40 animate-pulse h-12">
+<div class="size-5 rounded-full bg-skeleton-light/50"></div>
+<div class="h-4 w-20 rounded bg-skeleton-light/50"></div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-3 px-3 py-2 rounded-xl h-12">
+<div class="size-5 rounded-full bg-skeleton animate-pulse"></div>
+<div class="h-4 w-24 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center gap-3 px-3 py-2 rounded-xl h-12">
+<div class="size-5 rounded-full bg-skeleton animate-pulse"></div>
+<div class="h-4 w-16 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center gap-3 px-3 py-2 rounded-xl h-12">
+<div class="size-5 rounded-full bg-skeleton animate-pulse"></div>
+<div class="h-4 w-20 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Item 5 -->
+<div class="flex items-center gap-3 px-3 py-2 rounded-xl h-12">
+<div class="size-5 rounded-full bg-skeleton animate-pulse"></div>
+<div class="h-4 w-24 rounded bg-skeleton animate-pulse"></div>
+</div>
+</div>
+<!-- Sidebar Footer Skeleton -->
+<div class="mt-auto pt-4 border-t border-[#232f48]">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="size-8 rounded-full bg-skeleton animate-pulse"></div>
+<div class="flex flex-col gap-2">
+<div class="h-3 w-24 rounded bg-skeleton animate-pulse"></div>
+<div class="h-2 w-16 rounded bg-skeleton animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex flex-col flex-1 min-w-0 h-full bg-background-dark relative">
+<!-- Top Navbar Skeleton -->
+<header class="flex items-center justify-between h-16 px-6 lg:px-10 border-b border-[#232f48] shrink-0 bg-background-dark z-20">
+<div class="flex items-center gap-4">
+<!-- Mobile Hamburger (visible on small screens) -->
+<div class="lg:hidden size-8 rounded bg-skeleton animate-pulse"></div>
+<!-- Breadcrumb/Title Skeleton -->
+<div class="h-6 w-32 md:w-48 rounded bg-skeleton animate-pulse"></div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Notification Icon Skeleton -->
+<div class="size-8 rounded-full bg-skeleton animate-pulse hidden sm:block"></div>
+<!-- User Avatar Skeleton -->
+<div class="size-9 rounded-full bg-skeleton animate-pulse"></div>
+</div>
+</header>
+<!-- Scrollable Page Content -->
+<main class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 lg:px-10 lg:py-8">
+<div class="mx-auto max-w-7xl flex flex-col gap-8">
+<!-- Page Heading Skeleton -->
+<div class="flex flex-col gap-3">
+<div class="h-10 w-48 md:w-64 rounded-lg bg-skeleton animate-pulse"></div>
+<div class="h-5 w-full max-w-sm rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<!-- Stats Row Skeleton -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Stat Card 1 -->
+<div class="flex flex-col justify-between gap-4 p-6 rounded-xl border border-[#324467] bg-[#192233]/40">
+<div class="h-5 w-24 rounded bg-skeleton animate-pulse"></div>
+<div class="h-8 w-16 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Stat Card 2 -->
+<div class="flex flex-col justify-between gap-4 p-6 rounded-xl border border-[#324467] bg-[#192233]/40">
+<div class="h-5 w-28 rounded bg-skeleton animate-pulse"></div>
+<div class="h-8 w-12 rounded bg-skeleton animate-pulse"></div>
+</div>
+<!-- Stat Card 3 -->
+<div class="flex flex-col justify-between gap-4 p-6 rounded-xl border border-[#324467] bg-[#192233]/40">
+<div class="h-5 w-24 rounded bg-skeleton animate-pulse"></div>
+<div class="h-8 w-20 rounded bg-skeleton animate-pulse"></div>
+</div>
+</div>
+<!-- Projects Grid Skeleton -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card Skeleton 1 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<!-- Image Area -->
+<div class="w-full aspect-video bg-skeleton animate-pulse relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-transparent to-white/5"></div>
+</div>
+<!-- Content Area -->
+<div class="p-5 flex flex-col gap-4 flex-1">
+<!-- Title & Status -->
+<div class="flex justify-between items-start">
+<div class="h-6 w-2/3 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<!-- Text Lines -->
+<div class="space-y-2 mt-1">
+<div class="h-4 w-full rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-3/4 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<!-- Footer / Health Bar -->
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-24 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Card Skeleton 2 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<div class="w-full aspect-video bg-skeleton animate-pulse relative"></div>
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="h-6 w-3/4 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<div class="space-y-2 mt-1">
+<div class="h-4 w-full rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-1/2 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-20 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Card Skeleton 3 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<div class="w-full aspect-video bg-skeleton animate-pulse relative"></div>
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="h-6 w-1/2 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<div class="space-y-2 mt-1">
+<div class="h-4 w-11/12 rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-2/3 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-24 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Card Skeleton 4 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<div class="w-full aspect-video bg-skeleton animate-pulse relative"></div>
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="h-6 w-3/5 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<div class="space-y-2 mt-1">
+<div class="h-4 w-full rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-3/5 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-20 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Card Skeleton 5 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<div class="w-full aspect-video bg-skeleton animate-pulse relative"></div>
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="h-6 w-2/3 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<div class="space-y-2 mt-1">
+<div class="h-4 w-full rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-40 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-24 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Card Skeleton 6 -->
+<div class="group flex flex-col rounded-xl border border-[#324467] bg-[#192233] overflow-hidden shadow-sm">
+<div class="w-full aspect-video bg-skeleton animate-pulse relative"></div>
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="h-6 w-3/4 rounded bg-skeleton animate-pulse"></div>
+<div class="h-6 w-16 rounded-full bg-skeleton/60 animate-pulse"></div>
+</div>
+<div class="space-y-2 mt-1">
+<div class="h-4 w-10/12 rounded bg-skeleton/50 animate-pulse"></div>
+<div class="h-4 w-1/2 rounded bg-skeleton/50 animate-pulse"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-[#324467]/50 flex items-center justify-between gap-4">
+<div class="h-3 w-20 rounded bg-skeleton/40 animate-pulse"></div>
+<div class="h-2 flex-1 max-w-[100px] rounded-full bg-skeleton/40 animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

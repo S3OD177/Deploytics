@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Project Detail</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-dark": "#161b26", // Slightly lighter for cards
+                        "border-dark": "#232f48",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden selection:bg-primary/30">
+<div class="flex min-h-screen w-full">
+<!-- Sidebar -->
+<aside class="w-64 shrink-0 border-r border-border-dark hidden md:flex flex-col bg-background-dark sticky top-0 h-screen">
+<div class="p-6">
+<div class="flex flex-col gap-1 mb-8">
+<h1 class="text-white text-lg font-bold tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">data_usage</span>
+                        DevPulse
+                    </h1>
+<p class="text-slate-400 text-xs font-medium">Developer Visibility</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined fill-1">folder_open</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="text-sm font-medium">Billing</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-6 border-t border-border-dark">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-purple-500 overflow-hidden" data-alt="User Avatar">
+<img alt="User Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5jbjf9UEfggdoEWAxrLa3VPVh9RLkaqGdGvWHqFugrj4VjtD90_psyTcnsdMkebk3wyiTDwp4WXTtFZtnAbyocdQ6M8z9mMurdrqy92JvbdnZLWFu3zBZRgEikt7QwFjirDP9FzkXk9CJVtGzrkDehK896_S3ilogd_8gLv9BGxJLdza1QjWBj_b31bm47ckcqvZY80Ddj4-3afc1V0rybH--rgtnR3TzTs_PKmPvSpXOr9fvk1-b8XSa0BFIVpxYpNuc7MBEWA2h"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Alex Dev</span>
+<span class="text-xs text-slate-400">Pro Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 bg-background-dark">
+<div class="flex-1 px-6 md:px-12 py-8 max-w-6xl mx-auto w-full">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-sm text-slate-400 mb-6">
+<a class="hover:text-white transition-colors" href="#">Projects</a>
+<span class="material-symbols-outlined text-[16px] text-slate-600">chevron_right</span>
+<span class="text-white font-medium">frontend-dashboard-v2</span>
+</nav>
+<!-- Header Section -->
+<div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6 mb-10 border-b border-border-dark pb-8">
+<div class="flex flex-col gap-4">
+<h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">frontend-dashboard-v2</h1>
+<div class="flex flex-wrap items-center gap-3">
+<!-- Status Badges -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="text-xs font-semibold">Production: Live</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+<span class="material-symbols-outlined text-[16px]">ecg_heart</span>
+<span class="text-xs font-semibold">Health: 99.9%</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+<span class="material-symbols-outlined text-[16px]">deployed_code</span>
+<span class="text-xs font-semibold font-mono">v2.4.0</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-transparent text-white text-sm font-medium hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-[20px]">code</span>
+<span>Open Repo</span>
+</button>
+<button class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-transparent text-white text-sm font-medium hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+<span>Open Deployment</span>
+</button>
+</div>
+</div>
+<!-- Last Known State Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<!-- Last Deployment Card -->
+<div class="group relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div>
+<h3 class="text-white text-sm font-semibold">Last Deployment</h3>
+<p class="text-slate-400 text-xs">Production Environment</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary">Success</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<span class="text-2xl font-bold text-white">4m ago</span>
+</div>
+<div class="mt-4 flex items-center gap-4 text-xs text-slate-500 font-mono">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+                                1m 20s
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">account_tree</span>
+                                main
+                            </span>
+</div>
+</div>
+<!-- Last Commit Card -->
+<div class="group relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
+<span class="material-symbols-outlined">commit</span>
+</div>
+<div>
+<h3 class="text-white text-sm font-semibold">Last Commit</h3>
+<p class="text-slate-400 text-xs">master branch</p>
+</div>
+</div>
+</div>
+<p class="text-slate-200 text-sm font-medium truncate mb-3">Fix: hydration error on user profile</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-2">
+<div class="h-5 w-5 rounded-full overflow-hidden bg-slate-700" data-alt="Author Avatar">
+<img alt="Author" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWBk7VLo7vbMMLiCEQMZxUAbaUYQSF5WmqosqrnhofjEZQnDm3pMFR2XgF8_afLcybFX0rbKgJPZWm1RiZh95y3HA5qEgYLCarDD-X-guzzXqpzFXbUgtO8xiwe3yGzQFK3qDELLMOvVwxxrl3RwgPq5giOZSLp3Sgx5Vr_OOhaOGpv7hXq06CwF5RCVkdIh3WwirR9Rv7LrGx-lxAZp8QRSOWBq7KY4pnK7hEuUn3eq99mfl7JJGR3ht8hbOR8Daok5prMsmsDqOa"/>
+</div>
+<span class="text-xs text-slate-400">Sarah J.</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded">8f3a29</span>
+<span class="text-xs text-slate-500">10:38 AM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Section -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-bold text-white">Activity Log</h2>
+<!-- Tabs -->
+<div class="flex p-1 bg-border-dark/50 rounded-lg">
+<button class="px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-white shadow-sm transition-all">All</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all">Deploys</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all">Commits</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition-all">Alerts</button>
+</div>
+</div>
+<!-- Timeline Container -->
+<div class="relative border-l border-border-dark ml-3 space-y-8 pb-10">
+<!-- Event 1: Deployment Success -->
+<div class="relative pl-8 group">
+<span class="absolute -left-[9px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-background-dark ring-2 ring-emerald-500/50">
+<span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+</span>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-border-dark">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-emerald-500 text-[16px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Deployment Succeeded</p>
+<p class="text-xs text-slate-500 mt-0.5">Production environment updated successfully</p>
+</div>
+</div>
+<span class="text-xs font-mono text-slate-500 whitespace-nowrap">10:42 AM</span>
+</div>
+</div>
+<!-- Event 2: Deployment Started -->
+<div class="relative pl-8 group">
+<span class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-border-dark border-2 border-background-dark"></span>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-border-dark">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-blue-500 text-[16px] animate-spin">progress_activity</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Deployment Started</p>
+<p class="text-xs text-slate-500 mt-0.5">Triggered by commit to main</p>
+</div>
+</div>
+<span class="text-xs font-mono text-slate-500 whitespace-nowrap">10:40 AM</span>
+</div>
+</div>
+<!-- Event 3: Commit -->
+<div class="relative pl-8 group">
+<span class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-border-dark border-2 border-background-dark"></span>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-border-dark">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-purple-400 text-[16px]">commit</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-sm font-semibold text-white">Commit Added</p>
+<p class="text-xs text-slate-400 font-mono">feat: update dependencies and fix api route</p>
+<div class="flex items-center gap-2 mt-1">
+<img alt="Sarah J." class="h-4 w-4 rounded-full bg-slate-700" data-alt="Author mini avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOtMkBkU5WHqwL3-tKUJwVlWcZugX4PztEgv3dajUL_W0KDfd7UI1BrPZ3EqkD1CG-Z3TsOKHa7lAWjum_JFFNx-DryTBWrU0Zl7A5VUNrVbYnuQenjCnbM9MpLqX9aAnwUeElC79J7DIRavEQd3DijtCCPDHFddi_foIqI2a45Ljor_VpOA1LH_fgeGEElvfRfkHxHfg3ir6cbLy0iK5Wt3goC_pZzHA3EzgD0Fb4GyrLMF4UFIRKHWM-POAiwzKTPI7hi6I3nAxg"/>
+<span class="text-[11px] text-slate-500">Sarah J. committed <span class="font-mono text-purple-400/80">8f3a29</span></span>
+</div>
+</div>
+</div>
+<span class="text-xs font-mono text-slate-500 whitespace-nowrap">10:38 AM</span>
+</div>
+</div>
+<!-- Event 4: Alert Resolved -->
+<div class="relative pl-8 group">
+<span class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-border-dark border-2 border-background-dark"></span>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-border-dark">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-amber-500 text-[16px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Alert Resolved</p>
+<p class="text-xs text-slate-500 mt-0.5">High CPU Usage - Resolved automatically</p>
+</div>
+</div>
+<span class="text-xs font-mono text-slate-500 whitespace-nowrap">09:15 AM</span>
+</div>
+</div>
+<!-- Event 5: Alert Triggered -->
+<div class="relative pl-8 group">
+<span class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-border-dark border-2 border-background-dark"></span>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-border-dark">
+<div class="flex items-start gap-3">
+<div class="mt-0.5 h-8 w-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-red-500 text-[16px]">warning</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Alert Triggered</p>
+<p class="text-xs text-slate-500 mt-0.5">High CPU Usage &gt; 85%</p>
+</div>
+</div>
+<span class="text-xs font-mono text-slate-500 whitespace-nowrap">09:00 AM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

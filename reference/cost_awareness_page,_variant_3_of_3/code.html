@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cost Awareness - DevPulse</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-dark": "#161b26",
+                        "border-dark": "#2d3442",
+                        "muted": "#9da6b9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 border-r border-slate-200 dark:border-border-dark bg-[#111318] flex flex-col justify-between p-4 hidden md:flex">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-size: 20px;">terminal</span>
+</div>
+<div>
+<h1 class="text-white text-base font-bold leading-none">DevPulse</h1>
+<p class="text-muted text-xs font-normal mt-1">Developer Dashboard</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-white">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-white">folder_open</span>
+<span class="text-sm font-medium">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-white">notifications</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-xl text-primary">credit_card</span>
+<span class="text-sm font-medium">Billing</span>
+</a>
+<!-- Indented sub-item for context -->
+<a class="flex items-center gap-3 pl-11 pr-3 py-1.5 rounded-lg text-white bg-white/5 transition-colors" href="#">
+<span class="text-xs font-medium">Cost Awareness</span>
+</a>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-white hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-white">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 border-t border-border-dark mt-auto">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500" data-alt="User avatar gradient"></div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Alex Developer</p>
+<p class="text-muted text-xs">alex@devpulse.io</p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-light dark:bg-[#0b0e14]">
+<!-- Mobile Header -->
+<header class="md:hidden flex items-center justify-between p-4 border-b border-border-dark bg-[#111318]">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-size: 16px;">terminal</span>
+</div>
+<h1 class="text-white text-sm font-bold">DevPulse</h1>
+</div>
+<button class="text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 lg:px-12">
+<div class="max-w-6xl mx-auto flex flex-col gap-8">
+<!-- Page Heading -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-muted text-sm mb-1">
+<span>Billing</span>
+<span class="material-symbols-outlined text-[10px] align-middle">chevron_right</span>
+<span class="text-white">Cost Awareness</span>
+</div>
+<div class="flex justify-between items-end flex-wrap gap-4">
+<div>
+<h2 class="text-3xl font-bold tracking-tight text-white">Cost Awareness</h2>
+<p class="text-muted mt-1 text-sm md:text-base">Estimated usage trends across your connected services</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-3 py-2 bg-card-dark border border-border-dark rounded-lg text-sm text-white hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+                                Export Report
+                            </button>
+</div>
+</div>
+</div>
+<!-- Soft Warning Alert -->
+<div class="flex items-start gap-4 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
+<span class="material-symbols-outlined text-amber-500 mt-0.5">warning</span>
+<div class="flex flex-col gap-1">
+<p class="text-amber-200 text-sm font-medium">Usage Spike Detected</p>
+<p class="text-amber-200/70 text-sm">Note: Increased deployment frequency in 'Auth-Service' may impact compute credits for this billing cycle.</p>
+</div>
+</div>
+<!-- Summary Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Metric Card -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-6 flex flex-col gap-4 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-muted text-sm font-medium">Est. Monthly Usage</p>
+<span class="material-symbols-outlined text-muted text-lg cursor-help" title="Calculated based on current velocity">info</span>
+</div>
+<div>
+<p class="text-3xl font-bold text-white tracking-tight tabular-nums">$450 - $520</p>
+<p class="text-muted text-xs mt-2">Based on current velocity</p>
+</div>
+</div>
+<!-- Trend Card -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-6 flex flex-col gap-4 shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-muted text-sm font-medium">Usage Trend</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                                +12%
+                            </span>
+</div>
+<div>
+<p class="text-white font-medium">Increasing vs Last Month</p>
+<div class="w-full bg-gray-700/30 rounded-full h-1.5 mt-3">
+<div class="bg-amber-500 h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+<p class="text-muted text-xs mt-2">12% higher than average</p>
+</div>
+</div>
+<!-- Risk Card -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-6 flex flex-col gap-4 shadow-sm relative overflow-hidden">
+<!-- Decorative background glow -->
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start relative z-10">
+<p class="text-muted text-sm font-medium">Risk Indicator</p>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                Medium
+                            </span>
+</div>
+<div class="relative z-10">
+<p class="text-white text-lg font-semibold">Approaching tier limit</p>
+<p class="text-muted text-xs mt-1">82% of free tier computed used</p>
+</div>
+</div>
+</div>
+<!-- Usage Signals Section -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">sensors</span>
+<h3 class="text-white text-lg font-bold">Usage Signals</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Signal 1 -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors cursor-default group">
+<div class="flex items-center justify-between">
+<div class="p-2 rounded-lg bg-background-dark border border-border-dark text-muted group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                                    High
+                                </span>
+</div>
+<div>
+<p class="text-muted text-xs font-medium uppercase tracking-wider">Deployment Frequency</p>
+<p class="text-white text-xl font-bold mt-1">14 <span class="text-muted text-sm font-normal">/ day</span></p>
+</div>
+</div>
+<!-- Signal 2 -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors cursor-default group">
+<div class="flex items-center justify-between">
+<div class="p-2 rounded-lg bg-background-dark border border-border-dark text-muted group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">commit</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                    Moderate
+                                </span>
+</div>
+<div>
+<p class="text-muted text-xs font-medium uppercase tracking-wider">Commit Activity</p>
+<p class="text-white text-xl font-bold mt-1">45 <span class="text-muted text-sm font-normal">/ week</span></p>
+</div>
+</div>
+<!-- Signal 3 -->
+<div class="bg-card-dark border border-border-dark rounded-xl p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors cursor-default group">
+<div class="flex items-center justify-between">
+<div class="p-2 rounded-lg bg-background-dark border border-border-dark text-muted group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">database</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    Stable
+                                </span>
+</div>
+<div>
+<p class="text-muted text-xs font-medium uppercase tracking-wider">Database Growth</p>
+<p class="text-white text-xl font-bold mt-1">+0.5 <span class="text-muted text-sm font-normal">GB</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Project Cost Signals Table -->
+<div class="flex flex-col gap-4">
+<h3 class="text-white text-lg font-bold">Project Cost Signals</h3>
+<div class="bg-card-dark border border-border-dark rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-white/5 text-muted border-b border-border-dark">
+<tr>
+<th class="px-6 py-4 font-medium">Project Name</th>
+<th class="px-6 py-4 font-medium">Activity Level</th>
+<th class="px-6 py-4 font-medium">Est. Impact</th>
+<th class="px-6 py-4 font-medium">Trend</th>
+<th class="px-6 py-4 font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-dark text-white">
+<!-- Row 1 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">api</span>
+</div>
+<span class="font-medium">API-Gateway</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> High
+                                            </span>
+</td>
+<td class="px-6 py-4 text-muted">High Compute</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-red-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">arrow_upward</span>
+                                                Increasing
+                                            </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">lock</span>
+</div>
+<span class="font-medium">Auth-Service</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Med
+                                            </span>
+</td>
+<td class="px-6 py-4 text-muted">Moderate I/O</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-muted text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">remove</span>
+                                                Stable
+                                            </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">payments</span>
+</div>
+<span class="font-medium">Payment-Worker</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Low
+                                            </span>
+</td>
+<td class="px-6 py-4 text-muted">Low Memory</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-emerald-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm mr-1">arrow_downward</span>
+                                                Decreasing
+                                            </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer Disclaimer -->
+<div class="border-t border-border-dark pt-6 pb-2">
+<p class="text-muted text-xs text-center">
+                        Estimates are for planning purposes only and do not reflect final invoices. Actual costs may vary based on provider billing cycles and usage tiers.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+</body></html>
