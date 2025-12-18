@@ -25,6 +25,7 @@ import {
     ShieldAlert,
     Flag,
     Award,
+    Map,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -39,6 +40,7 @@ const navigation = [
     { name: 'Quests', href: '/challenges', icon: Swords },
     { name: 'Enterprise', href: '/enterprise', icon: Building2 },
     { name: 'Security', href: '/security', icon: ShieldAlert },
+    { name: 'Roadmap', href: '/roadmap', icon: Map },
     { name: 'Alerts', href: '/alerts', icon: Bell },
     { name: 'Billing', href: '/billing', icon: CreditCard },
     { name: 'Settings', href: '/settings', icon: Settings },

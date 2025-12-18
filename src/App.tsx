@@ -23,6 +23,7 @@ import Community from '@/pages/Community'
 import Challenges from '@/pages/Challenges'
 import Enterprise from '@/pages/Enterprise'
 import Security from '@/pages/Security'
+import FeatureRoadmap from '@/pages/FeatureRoadmap'
 
 
 // Layout
@@ -77,6 +78,7 @@ function AppRoutes() {
                 <Route path="challenges" element={<Challenges />} />
                 <Route path="enterprise" element={<Enterprise />} />
                 <Route path="security" element={<Security />} />
+                <Route path="roadmap" element={<FeatureRoadmap />} />
 
             </Route>
 
