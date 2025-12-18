@@ -142,6 +142,7 @@ export default function Overview() {
                     canCreate={canCreate}
                     maxProjects={maxProjects}
                     currentProjects={projects.length}
+                    defaultTier={subscription?.plan}
                 />
             </div>
 

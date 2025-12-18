@@ -43,6 +43,19 @@ export default function Integrations() {
         enabled: !!user
     })
 
+    const { data: subscription, isLoading: isLoadingSub } = useQuery({
+        queryKey: ['subscription'],
+        queryFn: async () => {
+            const { data } = await supabase
+                .from('subscriptions')
+                .select('*')
+                .eq('user_id', user?.id)
+                .single()
+            return data
+        },
+        enabled: !!user,
+    })
+
     const defaultProject = projects[0]
     const hasProjects = projects.length > 0
 
@@ -102,7 +115,7 @@ export default function Integrations() {
         }
     }
 
-    if (isLoading || isLoadingProjects) {
+    if (isLoading || isLoadingProjects || isLoadingSub) {
         return (
             <div className="space-y-8">
                 <div>
@@ -196,7 +209,12 @@ export default function Integrations() {
                                 You need to create at least one project before you can attach integrations.
                             </AlertDescription>
                         </div>
-                        <NewProjectDialog canCreate={true} currentProjects={0} maxProjects={3} />
+                        <NewProjectDialog
+                            canCreate={true}
+                            currentProjects={0}
+                            maxProjects={3}
+                            defaultTier={subscription?.plan}
+                        />
                     </div>
                 </Alert>
             )}

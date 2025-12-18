@@ -28,16 +28,17 @@ import { useNavigate } from "react-router-dom";
 export function NewProjectDialog({
     canCreate,
     maxProjects,
-    currentProjects
+    currentProjects,
+    defaultTier = "hobby"
 }: {
     canCreate: boolean;
     maxProjects: number;
     currentProjects: number;
+    defaultTier?: string;
 }) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
-    const [tier, setTier] = useState("hobby");
     const navigate = useNavigate();
 
     const handleCreate = async () => {
@@ -52,7 +53,7 @@ export function NewProjectDialog({
 
             const { error } = await supabase.from('projects').insert({
                 name,
-                tier,
+                tier: defaultTier,
                 user_id: user?.id
             });
 
@@ -111,18 +112,16 @@ export function NewProjectDialog({
                                     className="h-10"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="tier">Tier</Label>
-                                <Select value={tier} onValueChange={setTier}>
-                                    <SelectTrigger id="tier">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="hobby">Hobby</SelectItem>
-                                        <SelectItem value="pro">Pro</SelectItem>
-                                        <SelectItem value="enterprise">Enterprise</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                            <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-dashed border-border">
+                                <Zap className="size-4 text-primary" />
+                                <div className="space-y-0.5">
+                                    <p className="text-xs font-bold leading-none capitalize">
+                                        {defaultTier} Tier
+                                    </p>
+                                    <p className="text-[10px] text-muted-foreground">
+                                        Using your current subscription tier.
+                                    </p>
+                                </div>
                             </div>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Github className="size-3" />
