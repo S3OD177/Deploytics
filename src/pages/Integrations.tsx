@@ -43,7 +43,7 @@ export default function Integrations() {
     })
 
     const saveIntegrationMutation = useMutation({
-        mutationFn: async ({ provider, token }: { provider: string, token: string }) => {
+        mutationFn: async ({ provider, token, scopes }: { provider: string, token: string, scopes: string[] }) => {
             if (!defaultProject) throw new Error("No project found to attach integration to. Please create a project first.")
 
             let validation;
@@ -75,7 +75,8 @@ export default function Integrations() {
                     provider,
                     config: {
                         access_token: token,
-                        metadata: validation.metadata
+                        metadata: validation.metadata,
+                        selected_scopes: scopes,
                     },
                     status: 'connected',
                     last_synced_at: new Date().toISOString()
@@ -88,9 +89,9 @@ export default function Integrations() {
         }
     })
 
-    const handleSaveIntegration = async (provider: string, token: string) => {
+    const handleSaveIntegration = async (provider: string, token: string, scopes: string[]) => {
         try {
-            await saveIntegrationMutation.mutateAsync({ provider, token })
+            await saveIntegrationMutation.mutateAsync({ provider, token, scopes })
             return {}
         } catch (err: any) {
             return { error: err.message }

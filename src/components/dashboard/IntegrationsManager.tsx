@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Github, Cloud, Database, Server, Loader2, Check, ExternalLink, Unplug, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,11 +26,12 @@ const INTEGRATIONS = [
         docsUrl: "https://github.com/settings/tokens",
         placeholder: "ghp_xxxxxxxxxxxx",
         fieldName: "access_token",
-        dataFetched: [
-            "Repository names & details",
-            "Commit history & messages",
-            "Pull request status updates",
-            "GitHub Actions workflow runs"
+        fetchOptions: [
+            { id: "repos", label: "Repositories", description: "Read-only access to repository metadata", default: true },
+            { id: "commits", label: "Commits", description: "Sync commit history and authors", default: true },
+            { id: "prs", label: "Pull Requests", description: "Track PR status and reviews", default: true },
+            { id: "actions", label: "Actions", description: "Monitor workflow runs and status", default: true },
+            { id: "issues", label: "Issues", description: "Track open issues and bugs", default: false },
         ],
         steps: [
             "Go to GitHub Settings > Developer settings",
@@ -48,11 +50,11 @@ const INTEGRATIONS = [
         docsUrl: "https://vercel.com/account/tokens",
         placeholder: "xxxxxxxxxxxxxxxx",
         fieldName: "access_token",
-        dataFetched: [
-            "Project deployment status",
-            "Build duration & errors",
-            "Domain configuration",
-            "Serverless function logs"
+        fetchOptions: [
+            { id: "deployments", label: "Deployments", description: "Status, duration, and commit info", default: true },
+            { id: "domains", label: "Domains", description: "DNS configuration and SSL status", default: true },
+            { id: "logs", label: "Build Logs", description: "Error logs and build output", default: false },
+            { id: "analytics", label: "Web Vitals", description: "Real-time performance metrics", default: false },
         ],
         steps: [
             "Naviage to Vercel Account Settings",
@@ -71,11 +73,11 @@ const INTEGRATIONS = [
         docsUrl: "https://supabase.com/dashboard/account/tokens",
         placeholder: "sbp_xxxxxxxxxxxx",
         fieldName: "access_token",
-        dataFetched: [
-            "Database size & storage used",
-            "API request counts",
-            "Auth user statistics",
-            "Project health metrics"
+        fetchOptions: [
+            { id: "database", label: "Database Health", description: "Size, connections, and cache hit rate", default: true },
+            { id: "auth", label: "Auth Stats", description: "Active users and sign-ins", default: true },
+            { id: "storage", label: "Storage", description: "Bucket usage and bandwidth", default: false },
+            { id: "functions", label: "Edge Functions", description: "Invocations and error rates", default: false },
         ],
         steps: [
             "Go to Supabase Dashboard > Account",
@@ -95,7 +97,7 @@ const INTEGRATIONS = [
         placeholder: "xxxxxxxxxxxxxxxx",
         fieldName: "access_token",
         comingSoon: true,
-        dataFetched: ["Deployments", "Bandwidth"],
+        fetchOptions: [],
         steps: []
     },
     {
@@ -109,7 +111,7 @@ const INTEGRATIONS = [
         placeholder: "xxxxxxxxxxxxxxxx",
         fieldName: "access_token",
         comingSoon: true,
-        dataFetched: ["Service status", "Usage metrics"],
+        fetchOptions: [],
         steps: []
     },
     {
@@ -123,7 +125,7 @@ const INTEGRATIONS = [
         placeholder: "rnd_xxxxxxxxxxxx",
         fieldName: "access_token",
         comingSoon: true,
-        dataFetched: ["Deployments", "Service health"],
+        fetchOptions: [],
         steps: []
     },
 ];
@@ -132,7 +134,11 @@ interface IntegrationData {
     id: string;
     provider: string;
     status: string;
-    config: any;
+    config: {
+        access_token?: string;
+        selected_scopes?: string[];
+        [key: string]: any;
+    };
     last_synced_at: string | null;
 }
 
@@ -141,10 +147,11 @@ export function IntegrationsManager({
     onSave
 }: {
     integrations: IntegrationData[];
-    onSave: (provider: string, token: string) => Promise<{ error?: string }>;
+    onSave: (provider: string, token: string, scopes: string[]) => Promise<{ error?: string }>;
 }) {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [tokens, setTokens] = useState<Record<string, string>>({});
+    const [selectedScopes, setSelectedScopes] = useState<Record<string, string[]>>({});
     const [isPending, startTransition] = useTransition();
 
     const getIntegrationStatus = (providerId: string) => {
@@ -153,19 +160,39 @@ export function IntegrationsManager({
 
     const handleConnect = (providerId: string) => {
         const token = tokens[providerId];
+        const scopes = selectedScopes[providerId] || INTEGRATIONS.find(i => i.id === providerId)?.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
+
         if (!token) {
             toast.error("Please enter an access token");
             return;
         }
 
-        startTransition(async () => {
-            const result = await onSave(providerId, token);
-            if (result.error) {
-                toast.error(result.error);
+        if (scopes.length === 0) {
+            toast.error("Please select at least one data point to fetch");
+            return;
+        }
+
+        startTransition(() => {
+            (async () => {
+                const result = await onSave(providerId, token, scopes);
+                if (result.error) {
+                    toast.error(result.error);
+                } else {
+                    toast.success(`${providerId} connected successfully!`);
+                    setTokens(prev => ({ ...prev, [providerId]: '' }));
+                    setExpandedId(null);
+                }
+            })();
+        });
+    };
+
+    const toggleScope = (providerId: string, scopeId: string) => {
+        setSelectedScopes(prev => {
+            const current = prev[providerId] || INTEGRATIONS.find(i => i.id === providerId)?.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
+            if (current.includes(scopeId)) {
+                return { ...prev, [providerId]: current.filter(id => id !== scopeId) };
             } else {
-                toast.success(`${providerId} connected successfully!`);
-                setTokens(prev => ({ ...prev, [providerId]: '' }));
-                setExpandedId(null);
+                return { ...prev, [providerId]: [...current, scopeId] };
             }
         });
     };
@@ -177,6 +204,9 @@ export function IntegrationsManager({
                 const isConnected = status?.status === 'connected';
                 const isExpanded = expandedId === integration.id;
                 const Icon = integration.icon;
+
+                // Initialize scopes if not set
+                const currentScopes = selectedScopes[integration.id] || integration.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
 
                 return (
                     <Card
@@ -219,33 +249,79 @@ export function IntegrationsManager({
                         </CardHeader>
 
                         <CardContent className="pt-0 space-y-4">
-                            {/* Data Fetched Section - Always visible to explain value */}
-                            {!integration.comingSoon && (
+                            {/* Fetch Options - View Mode (What we fetch currently or what is possible) */}
+                            {!isExpanded && !integration.comingSoon && (
                                 <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
                                     <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
                                         <Info className="size-3.5" />
-                                        WHAT WE FETCH
+                                        {isConnected ? "ACTIVELY SYNCING" : "WHAT WE FETCH"}
                                     </div>
-                                    <div className="grid grid-cols-1 gap-1.5">
-                                        {integration.dataFetched.map((item, i) => (
-                                            <div key={i} className="flex items-center gap-2 text-xs text-foreground/80">
-                                                <div className="size-1 rounded-full bg-primary/50" />
-                                                {item}
-                                            </div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {(isConnected
+                                            ? integration.fetchOptions?.filter(o => status?.config?.selected_scopes?.includes(o.id))
+                                            : integration.fetchOptions?.filter(o => o.default)
+                                        )?.map((option) => (
+                                            <Badge key={option.id} variant="secondary" className="text-[10px] px-2 h-5 bg-secondary/50 font-normal">
+                                                {option.label}
+                                            </Badge>
                                         ))}
+                                        {isConnected && (status?.config?.selected_scopes?.length || 0) < (integration.fetchOptions?.length || 0) && (
+                                            <span className="text-[10px] text-muted-foreground self-center ml-1">
+                                                +{(integration.fetchOptions?.length || 0) - (status?.config?.selected_scopes?.length || 0)} more available
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             )}
 
                             {isExpanded && !integration.comingSoon ? (
-                                <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="space-y-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+
+                                    {/* Data Selection */}
+                                    <div className="space-y-3">
+                                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                                            Select Data to Sync
+                                        </span>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {integration.fetchOptions?.map((option) => (
+                                                <div
+                                                    key={option.id}
+                                                    className={cn(
+                                                        "flex items-start gap-3 p-2 rounded-lg border transition-colors cursor-pointer",
+                                                        currentScopes.includes(option.id)
+                                                            ? "bg-primary/5 border-primary/20"
+                                                            : "bg-transparent border-border hover:bg-muted/50"
+                                                    )}
+                                                    onClick={() => toggleScope(integration.id, option.id)}
+                                                >
+                                                    <Checkbox
+                                                        id={`${integration.id}-${option.id}`}
+                                                        checked={currentScopes.includes(option.id)}
+                                                        onCheckedChange={() => toggleScope(integration.id, option.id)}
+                                                        className="mt-0.5"
+                                                    />
+                                                    <div className="space-y-0.5">
+                                                        <label
+                                                            htmlFor={`${integration.id}-${option.id}`}
+                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                                        >
+                                                            {option.label}
+                                                        </label>
+                                                        <p className="text-[11px] text-muted-foreground">
+                                                            {option.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
 
                                     {/* Connection Steps */}
-                                    <div className="space-y-2">
-                                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                            How to connect
+                                    <div className="space-y-2 pt-2 border-t border-border/50">
+                                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                                            Authentication
                                         </span>
-                                        <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed">
+                                        <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed pl-1">
                                             {integration.steps.map((step, i) => (
                                                 <li key={i} className="flex gap-2">
                                                     <span className="font-mono text-primary/70">{i + 1}.</span>
@@ -253,28 +329,17 @@ export function IntegrationsManager({
                                                 </li>
                                             ))}
                                         </ol>
-                                        <a
-                                            href={integration.docsUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1 pl-5"
-                                        >
-                                            Open settings directly <ExternalLink className="size-3" />
-                                        </a>
                                     </div>
 
                                     {/* Input Area */}
-                                    <div className="space-y-3 pt-2 border-t border-border/50">
-                                        <div className="space-y-1">
-                                            <span className="text-xs font-medium">Access Token</span>
-                                            <Input
-                                                type="password"
-                                                placeholder={integration.placeholder}
-                                                value={tokens[integration.id] || ''}
-                                                onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
-                                                className="h-9 text-sm font-mono bg-background"
-                                            />
-                                        </div>
+                                    <div className="space-y-3">
+                                        <Input
+                                            type="password"
+                                            placeholder={integration.placeholder}
+                                            value={tokens[integration.id] || ''}
+                                            onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
+                                            className="h-9 text-sm font-mono bg-background"
+                                        />
                                         <div className="flex gap-2">
                                             <Button
                                                 size="sm"
@@ -309,7 +374,7 @@ export function IntegrationsManager({
                                                             <Unplug className="size-4" />
                                                         </Button>
                                                     </TooltipTrigger>
-                                                    <TooltipContent>Disconnect Integration</TooltipContent>
+                                                    <TooltipContent>Disconnect & Revoke Access</TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
                                         </div>
@@ -321,7 +386,7 @@ export function IntegrationsManager({
                                             onClick={() => !integration.comingSoon && setExpandedId(integration.id)}
                                             disabled={integration.comingSoon}
                                         >
-                                            {integration.comingSoon ? "Coming Soon" : "Configure"}
+                                            {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}
                                         </Button>
                                     )}
                                 </div>

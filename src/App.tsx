@@ -12,6 +12,7 @@ import Alerts from '@/pages/Alerts'
 import Settings from '@/pages/Settings'
 import Integrations from '@/pages/Integrations'
 import Billing from '@/pages/Billing'
+import NotFound from '@/pages/NotFound'
 
 // Layout
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -64,7 +65,7 @@ function AppRoutes() {
             <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* Catch all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 }
