@@ -44,8 +44,8 @@ export async function POST(request: Request) {
                         updated_at: new Date().toISOString(),
                     }, { onConflict: "user_id" });
                 } else if (type === "addon") {
-                    // Add extra projects
-                    const extraProjects = plan === "extra_5" ? 5 : plan === "extra_10" ? 10 : 0;
+                    // Add extra projects (+5 for $4.99)
+                    const extraProjects = plan === "extra_5" ? 5 : 0;
 
                     // Record purchase
                     await supabase.from("purchases").insert({

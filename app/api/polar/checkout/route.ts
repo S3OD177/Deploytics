@@ -42,16 +42,11 @@ export async function POST(request: Request) {
                     return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
             }
         } else if (type === 'addon') {
-            // One-time purchase add-ons
-            switch (plan) {
-                case 'extra_5':
-                    productId = process.env.POLAR_ADDON_5_PRODUCT_ID || '';
-                    break;
-                case 'extra_10':
-                    productId = process.env.POLAR_ADDON_10_PRODUCT_ID || '';
-                    break;
-                default:
-                    return NextResponse.json({ error: "Invalid addon" }, { status: 400 });
+            // One-time purchase add-on
+            if (plan === 'extra_5') {
+                productId = process.env.POLAR_ADDON_5_PRODUCT_ID || '';
+            } else {
+                return NextResponse.json({ error: "Invalid addon" }, { status: 400 });
             }
         } else {
             return NextResponse.json({ error: "Invalid type" }, { status: 400 });

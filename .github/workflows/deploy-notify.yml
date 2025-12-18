@@ -1,0 +1,24 @@
+name: Deployment Notification
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  notify-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Notify Deploytics
+        run: |
+          curl -X POST https://deploytics.vercel.app/api/webhooks/github-action \
+          -H "Content-Type: application/json" \
+          -d '{
+            "project_name": "Deploytics",
+            "commit_message": "${{ github.event.head_commit.message }}",
+            "commit_hash": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "status": "success"
+          }'

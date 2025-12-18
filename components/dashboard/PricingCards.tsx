@@ -62,8 +62,7 @@ const PLANS = [
 ];
 
 const ADDONS = [
-    { id: "extra_5", name: "+5 Projects", price: 19 },
-    { id: "extra_10", name: "+10 Projects", price: 29 },
+    { id: "extra_5", name: "+5 Projects", price: 4.99 },
 ];
 
 export function PricingCards({ currentPlan = "free" }: { currentPlan?: string }) {
