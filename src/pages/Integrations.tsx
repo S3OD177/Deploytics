@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
@@ -56,12 +57,19 @@ export default function Integrations() {
         enabled: !!user,
     })
 
-    const defaultProject = projects[0]
+    const [selectedProjectId, setSelectedProjectId] = useState<string>('')
     const hasProjects = projects.length > 0
+
+    // Set default project when projects load
+    useEffect(() => {
+        if (projects.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(projects[0].id)
+        }
+    }, [projects, selectedProjectId])
 
     const saveIntegrationMutation = useMutation({
         mutationFn: async ({ provider, token, scopes }: { provider: string, token: string, scopes: string[] }) => {
-            if (!defaultProject) throw new Error("No project found to attach integration to. Please create a project first.")
+            if (!selectedProjectId) throw new Error("Please select a project first.")
 
             let validation;
             switch (provider) {
@@ -88,7 +96,7 @@ export default function Integrations() {
             const { error } = await supabase
                 .from('integrations')
                 .upsert({
-                    project_id: defaultProject.id,
+                    project_id: selectedProjectId,
                     provider,
                     config: {
                         access_token: token,
@@ -163,6 +171,30 @@ export default function Integrations() {
                 <p className="text-muted-foreground mt-1">
                     Connect and manage your external services
                 </p>
+
+                {/* Project Selector */}
+                {hasProjects && (
+                    <div className="mt-6 max-w-md">
+                        <label htmlFor="project-select" className="block text-sm font-medium text-muted-foreground mb-2">
+                            Select Project
+                        </label>
+                        <select
+                            id="project-select"
+                            value={selectedProjectId}
+                            onChange={(e) => setSelectedProjectId(e.target.value)}
+                            className="w-full h-10 px-3 text-sm rounded-md border border-input bg-background hover:bg-accent focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        >
+                            {projects.map((project: any) => (
+                                <option key={project.id} value={project.id}>
+                                    {project.name}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-xs text-muted-foreground mt-1.5">
+                            Integrations will be connected to this project
+                        </p>
+                    </div>
+                )}
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
