@@ -145,10 +145,12 @@ interface IntegrationData {
 
 export function IntegrationsManager({
     integrations,
-    onSave
+    onSave,
+    hasProjects = true
 }: {
     integrations: IntegrationData[];
     onSave: (provider: string, token: string, scopes: string[]) => Promise<{ error?: string }>;
+    hasProjects?: boolean;
 }) {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [tokens, setTokens] = useState<Record<string, string>>({});
@@ -439,7 +441,7 @@ export function IntegrationsManager({
                                                         size="sm"
                                                         className="flex-1 font-bold shadow-md hover:shadow-lg transition-all"
                                                         onClick={() => handleConnect(integration.id)}
-                                                        disabled={isPending}
+                                                        disabled={isPending || !hasProjects}
                                                     >
                                                         {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
                                                     </Button>
@@ -485,15 +487,28 @@ export function IntegrationsManager({
                                                 </TooltipProvider>
                                             </div>
                                         ) : (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="w-full h-9"
-                                                onClick={() => !integration.comingSoon && setExpandedId(integration.id)}
-                                                disabled={integration.comingSoon}
-                                            >
-                                                {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}
-                                            </Button>
+                                            <TooltipProvider delayDuration={0}>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="w-full">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                className="w-full h-9"
+                                                                onClick={() => !integration.comingSoon && hasProjects && setExpandedId(integration.id)}
+                                                                disabled={integration.comingSoon || !hasProjects}
+                                                            >
+                                                                {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}
+                                                            </Button>
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    {!hasProjects && !integration.comingSoon && (
+                                                        <TooltipContent side="top">
+                                                            Create a project first to enable integrations
+                                                        </TooltipContent>
+                                                    )}
+                                                </Tooltip>
+                                            </TooltipProvider>
                                         )}
                                     </div>
                                 )}

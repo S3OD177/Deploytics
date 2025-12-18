@@ -5,6 +5,11 @@ import { useAuth } from '@/hooks/useAuth'
 import { IntegrationsManager } from '@/components/dashboard/IntegrationsManager'
 import { IntegrationService } from '@/lib/integrations'
 import { Skeleton } from '@/components/ui/skeleton'
+import { NewProjectDialog } from '@/components/dashboard/NewProjectDialog'
+import { AlertCircle, Plus } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 export default function Integrations() {
     const { user } = useAuth()
@@ -29,19 +34,17 @@ export default function Integrations() {
 
     // We need a project to attach to. The schema enforces it.
     // For this task, I'll fetch the user's first project to use as the default target.
-    const { data: defaultProject } = useQuery({
-        queryKey: ['default-project'],
+    const { data: projects = [], isLoading: isLoadingProjects } = useQuery({
+        queryKey: ['projects'],
         queryFn: async () => {
-            const { data } = await supabase
-                .from('projects')
-                .select('id')
-                .eq('user_id', user?.id)
-                .limit(1)
-                .single()
-            return data
+            const { data } = await supabase.from('projects').select('*')
+            return data || []
         },
         enabled: !!user
     })
+
+    const defaultProject = projects[0]
+    const hasProjects = projects.length > 0
 
     const saveIntegrationMutation = useMutation({
         mutationFn: async ({ provider, token, scopes }: { provider: string, token: string, scopes: string[] }) => {
@@ -99,7 +102,7 @@ export default function Integrations() {
         }
     }
 
-    if (isLoading) {
+    if (isLoading || isLoadingProjects) {
         return (
             <div className="space-y-8">
                 <div>
@@ -182,9 +185,26 @@ export default function Integrations() {
                 </div>
             </div>
 
+            {!hasProjects && (
+                <Alert variant="destructive" className="bg-amber-500/10 text-amber-600 border-amber-500/20 mb-8 overflow-hidden relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <AlertCircle className="h-5 w-5 !text-amber-600" />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+                        <div>
+                            <AlertTitle className="font-bold text-amber-700">No Projects Found</AlertTitle>
+                            <AlertDescription className="text-amber-600/80">
+                                You need to create at least one project before you can attach integrations.
+                            </AlertDescription>
+                        </div>
+                        <NewProjectDialog canCreate={true} currentProjects={0} maxProjects={3} />
+                    </div>
+                </Alert>
+            )}
+
             <IntegrationsManager
                 integrations={integrations}
                 onSave={handleSaveIntegration}
+                hasProjects={hasProjects}
             />
         </div>
     )
