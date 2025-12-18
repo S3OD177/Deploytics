@@ -1,77 +1,63 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-    // Early return if Supabase env vars aren't configured
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-        console.warn('Supabase environment variables not configured, skipping auth middleware')
-        return NextResponse.next({
-            request: {
-                headers: request.headers,
-            },
-        })
-    }
-
+    // 1. Initialize response
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     })
 
+    // 2. Check Environment Variables safely
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    // Log diagnostic info (will show in Vercel logs)
+    console.log('[Middleware] Starting auth check for:', request.nextUrl.pathname)
+
+    if (!supabaseUrl || !supabaseKey) {
+        console.warn('[Middleware] MISSING ENV VARS. url:', !!supabaseUrl, 'key:', !!supabaseKey)
+        // Return without auth if configuration is missing
+        return response
+    }
+
     try {
+        // 3. Initialize Supabase Client
         const supabase = createServerClient(
             supabaseUrl,
-            supabaseAnonKey,
+            supabaseKey,
             {
                 cookies: {
-                    get(name: string) {
-                        return request.cookies.get(name)?.value
+                    getAll() {
+                        return request.cookies.getAll()
                     },
-                    set(name: string, value: string, options: CookieOptions) {
-                        request.cookies.set({
-                            name,
-                            value,
-                            ...options,
+                    setAll(cookiesToSet) {
+                        cookiesToSet.forEach(({ name, value, options }) => {
+                            request.cookies.set(name, value)
                         })
                         response = NextResponse.next({
                             request: {
                                 headers: request.headers,
                             },
                         })
-                        response.cookies.set({
-                            name,
-                            value,
-                            ...options,
-                        })
-                    },
-                    remove(name: string, options: CookieOptions) {
-                        request.cookies.set({
-                            name,
-                            value: '',
-                            ...options,
-                        })
-                        response = NextResponse.next({
-                            request: {
-                                headers: request.headers,
-                            },
-                        })
-                        response.cookies.set({
-                            name,
-                            value: '',
-                            ...options,
-                        })
+                        cookiesToSet.forEach(({ name, value, options }) =>
+                            response.cookies.set(name, value, options)
+                        )
                     },
                 },
             }
         )
 
+        // 4. Refresh Session
         await supabase.auth.getUser()
+        // console.log('[Middleware] Auth check successful')
+
     } catch (error) {
-        console.error('Middleware error:', error)
-        // Continue without auth refresh if there's an error
+        // 5. Catch any initialization/runtime errors
+        console.error('[Middleware] CRITICAL ERROR:', error)
+        // Return original response to keep site alive
+        return response
     }
 
     return response
