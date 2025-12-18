@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
+import { ThemeProvider } from '@/hooks/useTheme'
+import { CommandPalette } from '@/components/CommandPalette'
 
 // Pages
 import Login from '@/pages/Login'
@@ -19,7 +21,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
         )
@@ -71,7 +73,7 @@ function AuthCallback() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
         )
@@ -86,9 +88,12 @@ function AuthCallback() {
 
 function App() {
     return (
-        <AuthProvider>
-            <AppRoutes />
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <AppRoutes />
+                <CommandPalette />
+            </AuthProvider>
+        </ThemeProvider>
     )
 }
 

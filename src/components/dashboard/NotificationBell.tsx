@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Bell, Check, AlertCircle, Info, CheckCircle, AlertTriangle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-import { createClient } from "@/utils/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 interface Notification {
     id: string;
@@ -42,7 +42,6 @@ const TYPE_COLORS = {
 export function NotificationBell() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
-    const supabase = createClient();
 
     useEffect(() => {
         fetchNotifications();

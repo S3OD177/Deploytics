@@ -1,5 +1,9 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useRealtimeDeployments, useRealtimeProjects } from '@/hooks/useRealtime'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import { NotificationBell } from '@/components/dashboard/NotificationBell'
+import { Button } from '@/components/ui/button'
 import {
     LayoutDashboard,
     FolderKanban,
@@ -8,6 +12,7 @@ import {
     CreditCard,
     LogOut,
     Rocket,
+    Search,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +27,15 @@ const navigation = [
 export default function DashboardLayout() {
     const { user, signOut } = useAuth()
 
+    // Enable realtime updates
+    useRealtimeDeployments()
+    useRealtimeProjects()
+
+    const handleOpenCommandPalette = () => {
+        // Dispatch keyboard event to trigger command palette
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))
+    }
+
     return (
         <div className="min-h-screen bg-background">
             {/* Sidebar */}
@@ -31,7 +45,22 @@ export default function DashboardLayout() {
                     <span className="font-semibold text-lg">Deploytics</span>
                 </div>
 
-                <nav className="flex flex-col gap-1 p-4">
+                {/* Search button */}
+                <div className="p-4">
+                    <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2 text-muted-foreground"
+                        onClick={handleOpenCommandPalette}
+                    >
+                        <Search className="h-4 w-4" />
+                        <span className="flex-1 text-left">Search...</span>
+                        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:flex">
+                            ⌘K
+                        </kbd>
+                    </Button>
+                </div>
+
+                <nav className="flex flex-col gap-1 px-4">
                     {navigation.map((item) => (
                         <NavLink
                             key={item.name}
@@ -75,6 +104,14 @@ export default function DashboardLayout() {
 
             {/* Main content */}
             <main className="pl-64">
+                {/* Top bar */}
+                <header className="sticky top-0 z-40 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="flex h-full items-center justify-end gap-4 px-8">
+                        <NotificationBell />
+                        <ThemeToggle />
+                    </div>
+                </header>
+
                 <div className="p-8">
                     <Outlet />
                 </div>

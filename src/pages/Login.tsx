@@ -1,25 +1,44 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
-import { Rocket, Mail, Lock, Github } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Rocket, Mail, Lock, Github, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+
+// Validation schema
+const loginSchema = z.object({
+    email: z.string().email('Please enter a valid email'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+})
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 export default function Login() {
     const navigate = useNavigate()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    const handleEmailAuth = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+    })
+
+    const onSubmit = async (data: LoginFormData) => {
         setLoading(true)
 
         try {
             if (isSignUp) {
                 const { error } = await supabase.auth.signUp({
-                    email,
-                    password,
+                    email: data.email,
+                    password: data.password,
                     options: {
                         emailRedirectTo: `${window.location.origin}/auth/callback`,
                     },
@@ -28,8 +47,8 @@ export default function Login() {
                 toast.success('Check your email for the confirmation link!')
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
+                    email: data.email,
+                    password: data.password,
                 })
                 if (error) throw error
                 navigate('/overview')
@@ -69,45 +88,50 @@ export default function Login() {
 
                 {/* Form */}
                 <div className="bg-card border rounded-xl p-8 shadow-sm">
-                    <form onSubmit={handleEmailAuth} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Email</label>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <input
+                                <Input
+                                    id="email"
                                     type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                                    {...register('email')}
+                                    className="pl-10"
                                     placeholder="you@example.com"
-                                    required
                                 />
                             </div>
+                            {errors.email && (
+                                <p className="text-sm text-destructive">{errors.email.message}</p>
+                            )}
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Password</label>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <input
+                                <Input
+                                    id="password"
                                     type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                                    {...register('password')}
+                                    className="pl-10"
                                     placeholder="••••••••"
-                                    required
-                                    minLength={6}
                                 />
                             </div>
+                            {errors.password && (
+                                <p className="text-sm text-destructive">{errors.password.message}</p>
+                            )}
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
-                        >
-                            {loading ? 'Loading...' : isSignUp ? 'Create Account' : 'Sign In'}
-                        </button>
+                        <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : isSignUp ? (
+                                'Create Account'
+                            ) : (
+                                'Sign In'
+                            )}
+                        </Button>
                     </form>
 
                     <div className="relative my-6">
@@ -119,13 +143,15 @@ export default function Login() {
                         </div>
                     </div>
 
-                    <button
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full gap-2"
                         onClick={handleGithubLogin}
-                        className="w-full py-2.5 border rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-accent transition-colors"
                     >
                         <Github className="h-5 w-5" />
                         Continue with GitHub
-                    </button>
+                    </Button>
 
                     <p className="text-center text-sm text-muted-foreground mt-6">
                         {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
@@ -138,6 +164,11 @@ export default function Login() {
                         </button>
                     </p>
                 </div>
+
+                {/* Keyboard shortcut hint */}
+                <p className="text-center text-xs text-muted-foreground">
+                    Press <kbd className="px-1.5 py-0.5 rounded border bg-muted font-mono">⌘K</kbd> anywhere to open command palette
+                </p>
             </div>
         </div>
     )
