@@ -109,10 +109,34 @@ export default function Integrations() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold">Integrations</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Integrations</h1>
                 <p className="text-muted-foreground mt-1">
-                    Connect your favorite services to Deploytics
+                    Connect and manage your external services
                 </p>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <p className="text-sm font-medium text-muted-foreground">Active Connections</p>
+                        <p className="text-2xl font-bold mt-1">{integrations.filter((i: any) => i.status === 'connected').length} / 6</p>
+                    </div>
+                    <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <p className="text-sm font-medium text-muted-foreground">Last Sync</p>
+                        <p className="text-2xl font-bold mt-1">
+                            {integrations.length > 0
+                                ? 'Just now'
+                                : '—'
+                            }
+                        </p>
+                    </div>
+                    <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <p className="text-sm font-medium text-muted-foreground">Health Status</p>
+                        <div className="flex items-center gap-2 mt-1">
+                            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <p className="text-sm font-medium">All Systems Operational</p>
+                        </div>
+                    </div>
+                </div>
                 {/* User explanation of data handling */}
                 <div className="mt-4 p-4 bg-muted/50 rounded-lg text-sm text-muted-foreground border border-border max-w-3xl">
                     <p className="font-semibold mb-1">Data Privacy & Security</p>

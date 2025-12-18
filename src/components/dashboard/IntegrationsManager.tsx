@@ -219,7 +219,10 @@ export function IntegrationsManager({
                         )}
                     >
                         {isConnected && (
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-400" />
+                            <div className="absolute inset-0 pointer-events-none z-0">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
+                            </div>
                         )}
 
                         <CardHeader className="pb-4">

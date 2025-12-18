@@ -3,11 +3,11 @@
 This roadmap outlines 100 features to build Deploytics into a world-class deployment analytics platform, organized by implementation phase.
 
 ## Phase 1: Core Automation & Integrations (Direct Value)
-*Goal: Stop manual tracking and automate data ingestion.*
+*Goal: Stop manual tracking and automate data ingestion using secure Client-Read architecture.*
 
-1.  **Vercel Webhook Integration**: Auto-capture `deployment.created` and `deployment.error` events.
-2.  **GitHub Actions Integration**: A custom Action (`deploytics/action`) to track CI/CD pipelines.
-3.  **Netlify Integration**: Tracking for Netlify sites.
+1.  **Vercel Webhook Integration**: Securely receive `deployment.created` and `deployment.error` events via Supabase Edge Functions.
+2.  **GitHub Actions Integration**: A custom Action (`deploytics/action`) to track CI/CD pipelines (Client-Read validation).
+3.  **Netlify Integration**: Tracking for Netlify sites (API Read-Only).
 4.  **AWS CodePipeline Support**: Track AWS deployments.
 5.  **Heroku Support**: Tracking for legacy Heroku apps.
 6.  **GitLab CI Support**: Webhooks for GitLab pipelines.
