@@ -122,6 +122,31 @@ export default function Integrations() {
         }
     })
 
+    const deleteIntegrationMutation = useMutation({
+        mutationFn: async (provider: string) => {
+            if (!selectedProjectId) throw new Error("Please select a project first.")
+
+            const { error } = await supabase
+                .from('integrations')
+                .delete()
+                .match({ project_id: selectedProjectId, provider })
+
+            if (error) throw error
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['integrations'] })
+        }
+    })
+
+    const handleDisconnectIntegration = async (provider: string) => {
+        try {
+            await deleteIntegrationMutation.mutateAsync(provider)
+            return {}
+        } catch (err: any) {
+            return { error: err.message }
+        }
+    }
+
     const handleSaveIntegration = async (provider: string, token: string, scopes: string[], metadata?: any) => {
         try {
             await saveIntegrationMutation.mutateAsync({ provider, token, scopes, metadata })
@@ -262,6 +287,7 @@ export default function Integrations() {
             <IntegrationsManager
                 integrations={integrations}
                 onSave={handleSaveIntegration}
+                onDisconnect={handleDisconnectIntegration}
                 hasProjects={hasProjects}
             />
         </div>

@@ -16,6 +16,13 @@ import Billing from '@/pages/Billing'
 import StatusPage from '@/pages/StatusPage'
 import AcceptInvite from '@/pages/AcceptInvite'
 import NotFound from '@/pages/NotFound'
+import Reports from '@/pages/Reports'
+import Intelligence from '@/pages/Intelligence'
+import OperationsMap from '@/pages/OperationsMap'
+import Community from '@/pages/Community'
+import Challenges from '@/pages/Challenges'
+import Enterprise from '@/pages/Enterprise'
+import Security from '@/pages/Security'
 
 
 // Layout
@@ -63,6 +70,13 @@ function AppRoutes() {
                 <Route path="settings" element={<Settings />} />
                 <Route path="integrations" element={<Integrations />} />
                 <Route path="billing" element={<Billing />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="intelligence" element={<Intelligence />} />
+                <Route path="map" element={<OperationsMap />} />
+                <Route path="community" element={<Community />} />
+                <Route path="challenges" element={<Challenges />} />
+                <Route path="enterprise" element={<Enterprise />} />
+                <Route path="security" element={<Security />} />
 
             </Route>
 
