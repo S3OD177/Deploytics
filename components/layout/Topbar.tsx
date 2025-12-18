@@ -1,9 +1,10 @@
 "use client";
 
-import { Search, Bell, HelpCircle } from "lucide-react";
+import { Search, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { NotificationBell } from "@/components/dashboard/NotificationBell";
 import { usePathname } from "next/navigation";
 
 export function Topbar() {
@@ -36,10 +37,7 @@ export function Topbar() {
             </div>
 
             <div className="flex items-center justify-end gap-2 ml-4">
-                <Button variant="ghost" size="icon" className="relative rounded-full text-muted-foreground hover:text-foreground h-9 w-9">
-                    <Bell className="size-5" />
-                    <span className="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-background"></span>
-                </Button>
+                <NotificationBell />
                 <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground h-9 w-9">
                     <HelpCircle className="size-5" />
                 </Button>
