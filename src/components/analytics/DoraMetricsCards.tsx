@@ -73,7 +73,16 @@ export function DoraMetricsCards({ metrics }: { metrics: DoraMetricsProps }) {
     );
 }
 
-function MetricCard({ title, icon: Icon, value, subtext, rating, description }: any) {
+interface MetricCardProps {
+    title: string;
+    icon: any;
+    value: string;
+    subtext: string;
+    rating: keyof typeof RATING_COLORS;
+    description: string;
+}
+
+function MetricCard({ title, icon: Icon, value, subtext, rating, description }: MetricCardProps) {
     return (
         <Card className="border-border bg-card shadow-sm hover:border-primary/20 transition-colors">
             <CardContent className="p-6">

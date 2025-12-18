@@ -13,6 +13,7 @@ import Settings from '@/pages/Settings'
 import Integrations from '@/pages/Integrations'
 import Billing from '@/pages/Billing'
 import StatusPage from '@/pages/StatusPage'
+import AcceptInvite from '@/pages/AcceptInvite'
 import NotFound from '@/pages/NotFound'
 
 // Layout
@@ -64,6 +65,9 @@ function AppRoutes() {
 
             {/* Public Status Page (No Auth) */}
             <Route path="/status/:projectId" element={<StatusPage />} />
+
+            {/* Team Invitation (No Auth, logic handles it) */}
+            <Route path="/invite/:token" element={<AcceptInvite />} />
 
             {/* Auth Callback */}
             <Route path="/auth/callback" element={<AuthCallback />} />

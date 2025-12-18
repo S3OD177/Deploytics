@@ -4,14 +4,17 @@ import { Mail, Shield, CheckCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 interface SettingsFormProps {
-    userEmail: string;
-    userPlan?: string;
+    subscription?: any;
 }
 
-export function SettingsForm({ userEmail, userPlan = "Free" }: SettingsFormProps) {
+export function SettingsForm({ subscription }: SettingsFormProps) {
+    const { user } = useAuth();
+    const userEmail = user?.email || "Unknown";
+    const userPlan = subscription?.plan || "Free";
     return (
         <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-8 pb-20">
             {/* Breadcrumbs & Heading */}

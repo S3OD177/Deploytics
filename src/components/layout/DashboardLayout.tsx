@@ -14,6 +14,7 @@ import {
     Rocket,
     Search,
     Link2,
+    Activity,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +23,7 @@ const navigation = [
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Integrations', href: '/integrations', icon: Link2 },
     { name: 'Alerts', href: '/alerts', icon: Bell },
+    { name: 'Status', href: '/status/all', icon: Activity },
     { name: 'Billing', href: '/billing', icon: CreditCard },
     { name: 'Settings', href: '/settings', icon: Settings },
 ]

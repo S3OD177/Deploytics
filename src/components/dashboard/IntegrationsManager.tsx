@@ -58,7 +58,7 @@ const INTEGRATIONS = [
             { id: "analytics", label: "Web Vitals", description: "Real-time performance metrics", default: false },
         ],
         steps: [
-            "Naviage to Vercel Account Settings",
+            "Navigate to Vercel Account Settings",
             "Go to the 'Tokens' section",
             "Create a new token with 'Full Access'",
             "Copy the token secret"
@@ -201,9 +201,6 @@ export function IntegrationsManager({
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState("all");
 
-    // Add categories to your INTEGRATIONS constant items first:
-    // ... we need to do that via a wider refactor, or we can map them dynamically here.
-    // For now, let's inject a helper to determine category.
     const getCategory = (id: string) => {
         if (['github'].includes(id)) return 'code';
         if (['vercel', 'netlify', 'render'].includes(id)) return 'hosting';
@@ -264,7 +261,6 @@ export function IntegrationsManager({
                     const isExpanded = expandedId === integration.id;
                     const Icon = integration.icon;
 
-                    // Initialize scopes if not set
                     const currentScopes = selectedScopes[integration.id] || integration.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
 
                     return (
@@ -323,7 +319,6 @@ export function IntegrationsManager({
                             </CardHeader>
 
                             <CardContent className="pt-0 space-y-4">
-                                {/* Fetch Options - View Mode (What we fetch currently or what is possible) */}
                                 {!isExpanded && !integration.comingSoon && (
                                     <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
                                         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
@@ -353,7 +348,7 @@ export function IntegrationsManager({
 
                                         {/* Data Selection */}
                                         <div className="space-y-3">
-                                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block">
                                                 Select Data to Sync
                                             </span>
                                             <div className="grid grid-cols-1 gap-2">
@@ -377,7 +372,7 @@ export function IntegrationsManager({
                                                         <div className="space-y-0.5">
                                                             <label
                                                                 htmlFor={`${integration.id}-${option.id}`}
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                                                className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                                                             >
                                                                 {option.label}
                                                             </label>
@@ -391,55 +386,71 @@ export function IntegrationsManager({
                                         </div>
 
                                         {/* Connection Steps */}
-                                        <div className="space-y-2 pt-2 border-t border-border/50">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                                    Authentication
-                                                </span>
-                                                <a
-                                                    href={integration.docsUrl}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-[10px] text-primary hover:underline flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity"
-                                                >
-                                                    Get API Key <ExternalLink className="size-3" />
-                                                </a>
-                                            </div>
-                                            <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed pl-1">
-                                                {integration.steps.map((step, i) => (
-                                                    <li key={i} className="flex gap-2">
-                                                        <span className="font-mono text-primary/70">{i + 1}.</span>
-                                                        <span>{step}</span>
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        </div>
+                                        <div className="pt-2 border-t border-border/50 space-y-4">
+                                            <div className="flex flex-col gap-3">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                                        Step 1: Get Access Token
+                                                    </span>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-8 gap-2 text-primary border-primary/20 hover:border-primary/50 hover:bg-primary/5 font-bold shadow-sm"
+                                                        asChild
+                                                    >
+                                                        <a href={integration.docsUrl} target="_blank" rel="noreferrer">
+                                                            Open {integration.name} Settings <ExternalLink className="size-3.5" />
+                                                        </a>
+                                                    </Button>
+                                                </div>
 
-                                        {/* Input Area */}
-                                        <div className="space-y-3">
-                                            <Input
-                                                type="password"
-                                                placeholder={integration.placeholder}
-                                                value={tokens[integration.id] || ''}
-                                                onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
-                                                className="h-9 text-sm font-mono bg-background"
-                                            />
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    className="flex-1"
-                                                    onClick={() => handleConnect(integration.id)}
-                                                    disabled={isPending}
-                                                >
-                                                    {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => setExpandedId(null)}
-                                                >
-                                                    Cancel
-                                                </Button>
+                                                <div className="bg-muted/50 p-3 rounded-lg border border-border/50 space-y-2">
+                                                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                                                        <Info className="size-3" />
+                                                        Instructions
+                                                    </div>
+                                                    <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed pl-1">
+                                                        {integration.steps.map((step, i) => (
+                                                            <li key={i} className="flex gap-2">
+                                                                <span className="font-mono text-primary/70 font-bold">{i + 1}.</span>
+                                                                <span>{step}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ol>
+                                                </div>
+                                            </div>
+
+                                            {/* Input Area */}
+                                            <div className="space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                                        Step 2: Enter Token
+                                                    </span>
+                                                </div>
+                                                <Input
+                                                    type="password"
+                                                    placeholder={integration.placeholder}
+                                                    value={tokens[integration.id] || ''}
+                                                    onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
+                                                    className="h-9 text-sm font-mono bg-background border-primary/20 focus:border-primary shadow-inner"
+                                                />
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        size="sm"
+                                                        className="flex-1 font-bold shadow-md hover:shadow-lg transition-all"
+                                                        onClick={() => handleConnect(integration.id)}
+                                                        disabled={isPending}
+                                                    >
+                                                        {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => setExpandedId(null)}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

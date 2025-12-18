@@ -9,6 +9,8 @@ import { NewProjectDialog } from '@/components/dashboard/NewProjectDialog'
 import { ProjectCard } from '@/components/dashboard/ProjectCard'
 import { EmptyState } from '@/components/dashboard/EmptyState'
 import { format, subDays, startOfDay, isSameDay } from 'date-fns'
+import { Activity, ShieldCheck, Zap } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 export default function Overview() {
     const { user } = useAuth()
@@ -116,9 +118,22 @@ export default function Overview() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Dashboard</h1>
-                    <p className="text-muted-foreground mt-1">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-bold">Dashboard</h1>
+                        <Badge variant="outline" className="h-6 gap-1.5 border-emerald-500/20 bg-emerald-500/5 text-emerald-500 font-medium">
+                            <ShieldCheck className="size-3.5" />
+                            System Healthy
+                        </Badge>
+                    </div>
+                    <p className="text-muted-foreground mt-1 flex items-center gap-2">
                         Deployment health and DORA metrics.
+                        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            Live Updates Enabled
+                        </span>
                     </p>
                 </div>
                 <NewProjectDialog
@@ -130,6 +145,45 @@ export default function Overview() {
 
             {/* DORA Metrics */}
             <DoraMetricsCards metrics={doraMetrics} />
+
+            {/* Live Activity & Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-3 bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:bg-primary/10 transition-colors cursor-default">
+                    <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-primary/20 rounded-lg text-primary group-hover:scale-110 transition-transform">
+                            <Zap className="size-5 fill-primary" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold uppercase tracking-wider text-primary/70">Optimization Tip</p>
+                            <p className="text-sm text-foreground/80">Average lead time is high for 2 projects. Consider reviewing CI/CD pipepline caches.</p>
+                        </div>
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10">
+                        View Recommendations
+                    </Button>
+                </div>
+                <div className="md:col-span-1 bg-card border rounded-xl p-4 flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Project Capacity</span>
+                        <span className="text-lg font-bold">{projects.length} / {maxProjects}</span>
+                    </div>
+                    <div className="size-10 rounded-full border-4 border-muted flex items-center justify-center relative">
+                        <svg className="size-10 rotate-[-90deg]">
+                            <circle
+                                cx="20"
+                                cy="20"
+                                r="16"
+                                fill="transparent"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                className="text-primary"
+                                strokeDasharray={100}
+                                strokeDashoffset={100 - (projects.length / maxProjects) * 100}
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </div>
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

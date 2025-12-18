@@ -1,6 +1,6 @@
 
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ export function NewProjectDialog({
     currentProjects: number;
 }) {
     const [open, setOpen] = useState(false);
-    const [isPending, startTransition] = useTransition();
+    const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
     const [tier, setTier] = useState("hobby");
     const navigate = useNavigate();
@@ -46,24 +46,27 @@ export function NewProjectDialog({
             return;
         }
 
-        startTransition(async () => {
-            try {
-                const { error } = await supabase.from('projects').insert({
-                    name,
-                    tier,
-                    user_id: (await supabase.auth.getUser()).data.user?.id
-                });
+        setIsLoading(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
 
-                if (error) throw error;
+            const { error } = await supabase.from('projects').insert({
+                name,
+                tier,
+                user_id: user?.id
+            });
 
-                toast.success("Project created!");
-                setOpen(false);
-                setName("");
-                navigate(0); // Refresh page
-            } catch (error: any) {
-                toast.error(error.message || "Failed to create project");
-            }
-        });
+            if (error) throw error;
+
+            toast.success("Project created!");
+            setOpen(false);
+            setName("");
+            navigate(0); // Refresh page
+        } catch (error: any) {
+            toast.error(error.message || "Failed to create project");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -131,8 +134,8 @@ export function NewProjectDialog({
                             <Button variant="outline" onClick={() => setOpen(false)}>
                                 Cancel
                             </Button>
-                            <Button onClick={handleCreate} disabled={isPending}>
-                                {isPending ? (
+                            <Button onClick={handleCreate} disabled={isLoading}>
+                                {isLoading ? (
                                     <Loader2 className="size-4 animate-spin" />
                                 ) : (
                                     "Create Project"
