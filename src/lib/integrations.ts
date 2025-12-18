@@ -16,7 +16,9 @@ export const IntegrationService = {
             });
 
             if (!res.ok) {
-                return { isValid: false, error: 'Invalid GitHub token' };
+                const errorBody = await res.text();
+                console.error('[GitHub Validation] API Error:', res.status, errorBody);
+                return { isValid: false, error: `GitHub API Error (${res.status}): ${errorBody.substring(0, 100)}` };
             }
 
             const data = await res.json();
@@ -28,8 +30,9 @@ export const IntegrationService = {
                     html_url: data.html_url,
                 }
             };
-        } catch (error) {
-            return { isValid: false, error: 'Failed to connect to GitHub' };
+        } catch (error: any) {
+            console.error('[GitHub Validation] Network/CORS Error:', error);
+            return { isValid: false, error: error.message || 'Failed to connect to GitHub (possible CORS issue)' };
         }
     },
 
@@ -42,26 +45,28 @@ export const IntegrationService = {
             });
 
             if (!res.ok) {
-                return { isValid: false, error: 'Invalid Vercel token' };
+                const errorBody = await res.text();
+                console.error('[Vercel Validation] API Error:', res.status, errorBody);
+                return { isValid: false, error: `Vercel API Error (${res.status}): ${errorBody.substring(0, 100)}` };
             }
 
             const data = await res.json();
             return {
                 isValid: true,
                 metadata: {
-                    username: data.user.username,
-                    avatar_url: `https://vercel.com/api/www/avatar/${data.user.uid}`,
-                    email: data.user.email,
+                    username: data.user?.username,
+                    avatar_url: data.user?.uid ? `https://vercel.com/api/www/avatar/${data.user.uid}` : undefined,
+                    email: data.user?.email,
                 }
             };
-        } catch (error) {
-            return { isValid: false, error: 'Failed to connect to Vercel' };
+        } catch (error: any) {
+            console.error('[Vercel Validation] Network/CORS Error:', error);
+            return { isValid: false, error: error.message || 'Failed to connect to Vercel (possible CORS issue)' };
         }
     },
 
     async validateSupabase(token: string): Promise<ValidationResult> {
         try {
-            // Note: Supabase Management API requires an access token
             const res = await fetch('https://api.supabase.com/v1/projects', {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -69,7 +74,9 @@ export const IntegrationService = {
             });
 
             if (!res.ok) {
-                return { isValid: false, error: 'Invalid Supabase token' };
+                const errorBody = await res.text();
+                console.error('[Supabase Validation] API Error:', res.status, errorBody);
+                return { isValid: false, error: `Supabase API Error (${res.status}): ${errorBody.substring(0, 100)}` };
             }
 
             const data = await res.json();
@@ -84,18 +91,28 @@ export const IntegrationService = {
                     }))
                 }
             };
-        } catch (error) {
-            return { isValid: false, error: 'Failed to connect to Supabase' };
+        } catch (error: any) {
+            console.error('[Supabase Validation] Network/CORS Error:', error);
+            return { isValid: false, error: error.message || 'Failed to connect to Supabase (possible CORS issue)' };
         }
     },
 
-    // Generic validation helper if needed in future
-    async validateGeneric(url: string, token: string): Promise<boolean> {
+    // Generic validation helper with detailed error logging
+    async validateGeneric(url: string, token: string, providerName: string = 'Generic'): Promise<ValidationResult> {
         try {
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            return res.ok;
-        } catch {
-            return false;
+
+            if (!res.ok) {
+                const errorBody = await res.text();
+                console.error(`[${providerName} Validation] API Error:`, res.status, errorBody);
+                return { isValid: false, error: `${providerName} API Error (${res.status}): ${errorBody.substring(0, 100)}` };
+            }
+
+            return { isValid: true, metadata: {} };
+        } catch (error: any) {
+            console.error(`[${providerName} Validation] Network/CORS Error:`, error);
+            return { isValid: false, error: error.message || `Failed to connect to ${providerName} (possible CORS issue)` };
         }
     }
 };
+

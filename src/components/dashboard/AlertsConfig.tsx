@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Mail, Hash, Plus, Info, Bell, BellOff, MessageSquare } from "lucide-react";
@@ -68,20 +68,91 @@ export function AlertsConfig({ projects }: { projects: Project[] }) {
 }
 
 function ProjectAlerts({ project }: { project: Project }) {
-    // Mock state for UI demo if API fails
+    const queryClient = useQueryClient();
     const [slackUrl, setSlackUrl] = useState("");
+    const [emailEnabled, setEmailEnabled] = useState(true);
+    const [emailFailedEnabled, setEmailFailedEnabled] = useState(true);
+    const [emailSuccessEnabled, setEmailSuccessEnabled] = useState(false);
+    const [slackEnabled, setSlackEnabled] = useState(false);
+    const [slackFailedEnabled, setSlackFailedEnabled] = useState(true);
 
-    // In real app, fetch existing rules
-    const { data: rules = [] } = useQuery({
+    // Fetch existing rules for this project
+    const { data: rules = [], isLoading } = useQuery({
         queryKey: ['alert-rules', project.id],
         queryFn: async () => {
-            const { data, error } = await supabase.from('alert_rules').select('*').eq('project_id', project.id);
-            if (error) return []; // Fallback empty
-            return data;
+            const { data, error } = await supabase
+                .from('alert_rules')
+                .select('*')
+                .eq('project_id', project.id);
+            if (error) throw error;
+            return data || [];
         }
     });
 
-    const hasSlack = rules.some((r: any) => r.channel_type === 'slack');
+    // Sync local state with fetched rules
+    useEffect(() => {
+        const emailRule = rules.find((r: any) => r.channel_type === 'email');
+        const slackRule = rules.find((r: any) => r.channel_type === 'slack');
+
+        if (emailRule) {
+            setEmailEnabled(emailRule.enabled);
+            setEmailFailedEnabled(emailRule.events?.includes('deployment.failed') ?? true);
+            setEmailSuccessEnabled(emailRule.events?.includes('deployment.success') ?? false);
+        }
+        if (slackRule) {
+            setSlackEnabled(slackRule.enabled);
+            setSlackUrl(slackRule.config?.webhook_url || '');
+            setSlackFailedEnabled(slackRule.events?.includes('deployment.failed') ?? true);
+        }
+    }, [rules]);
+
+    // Mutation to upsert alert rules
+    const upsertRuleMutation = useMutation({
+        mutationFn: async ({ channelType, enabled, config, events }: { channelType: string, enabled: boolean, config: Record<string, any>, events: string[] }) => {
+            const existing = rules.find((r: any) => r.channel_type === channelType);
+
+            if (existing) {
+                const { error } = await supabase
+                    .from('alert_rules')
+                    .update({ enabled, config, events, updated_at: new Date().toISOString() })
+                    .eq('id', existing.id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabase
+                    .from('alert_rules')
+                    .insert({ project_id: project.id, channel_type: channelType, enabled, config, events });
+                if (error) throw error;
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['alert-rules', project.id] });
+            toast.success("Alert rule saved!");
+        },
+        onError: (err: any) => {
+            toast.error(err.message || "Failed to save alert rule");
+        }
+    });
+
+    const handleSaveEmail = () => {
+        const events: string[] = [];
+        if (emailFailedEnabled) events.push('deployment.failed');
+        if (emailSuccessEnabled) events.push('deployment.success');
+        upsertRuleMutation.mutate({ channelType: 'email', enabled: emailEnabled, config: {}, events });
+    };
+
+    const handleSaveSlack = () => {
+        if (!slackUrl.startsWith('https://hooks.slack.com/')) {
+            toast.error("Please enter a valid Slack webhook URL");
+            return;
+        }
+        const events: string[] = [];
+        if (slackFailedEnabled) events.push('deployment.failed');
+        upsertRuleMutation.mutate({ channelType: 'slack', enabled: slackEnabled, config: { webhook_url: slackUrl }, events });
+    };
+
+    if (isLoading) {
+        return <div className="p-10 text-center text-muted-foreground">Loading...</div>;
+    }
 
     return (
         <>
@@ -106,17 +177,18 @@ function ProjectAlerts({ project }: { project: Project }) {
                                 <p className="text-sm text-muted-foreground">Send to your account email.</p>
                             </div>
                         </div>
-                        <Switch defaultChecked />
+                        <Switch checked={emailEnabled} onCheckedChange={(v) => setEmailEnabled(v)} />
                     </div>
                     <div className="pl-14 grid gap-2">
                         <div className="flex items-center gap-2">
-                            <Checkbox id="email-fail" defaultChecked />
+                            <Checkbox id="email-fail" checked={emailFailedEnabled} onCheckedChange={(v) => setEmailFailedEnabled(!!v)} />
                             <label htmlFor="email-fail" className="text-sm">Failed Deployments</label>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Checkbox id="email-success" />
+                            <Checkbox id="email-success" checked={emailSuccessEnabled} onCheckedChange={(v) => setEmailSuccessEnabled(!!v)} />
                             <label htmlFor="email-success" className="text-sm">Successful Deployments</label>
                         </div>
+                        <Button size="sm" onClick={handleSaveEmail} disabled={upsertRuleMutation.isPending}>Save Email Config</Button>
                     </div>
                 </div>
 
@@ -134,7 +206,7 @@ function ProjectAlerts({ project }: { project: Project }) {
                                 <p className="text-sm text-muted-foreground">Post to a Slack channel.</p>
                             </div>
                         </div>
-                        <Switch checked={hasSlack} />
+                        <Switch checked={slackEnabled} onCheckedChange={(v) => setSlackEnabled(v)} />
                     </div>
 
                     <div className="pl-14 space-y-4">
@@ -149,11 +221,11 @@ function ProjectAlerts({ project }: { project: Project }) {
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center gap-2">
-                                <Checkbox id="slack-fail" defaultChecked />
+                                <Checkbox id="slack-fail" checked={slackFailedEnabled} onCheckedChange={(v) => setSlackFailedEnabled(!!v)} />
                                 <label htmlFor="slack-fail" className="text-sm">Failed Deployments</label>
                             </div>
                         </div>
-                        <Button size="sm" onClick={() => toast.success("Slack webhook saved!")}>Save Slack Config</Button>
+                        <Button size="sm" onClick={handleSaveSlack} disabled={upsertRuleMutation.isPending}>Save Slack Config</Button>
                     </div>
                 </div>
 
@@ -178,3 +250,4 @@ function ProjectAlerts({ project }: { project: Project }) {
         </>
     );
 }
+

@@ -70,29 +70,30 @@ export default function Overview() {
     const failedDeps = deployments.filter((d: any) => d.status === 'failed').length;
     const successDeps = deployments.filter((d: any) => d.status === 'success').length;
 
-    // 1. Frequency
-    // Simple calc: total / 7 days (mock window or actual data spread)
-    const frequencyValue = totalDeps > 0 ? (totalDeps / 7).toFixed(1) : "0";
-    const freqRating = totalDeps > 20 ? 'Elite' : totalDeps > 5 ? 'High' : 'Low'; // arbitrary thresholds
+    // 1. Deployment Frequency (Calculate actual days spanned by deployment data)
+    const dates = deployments.map((d: any) => new Date(d.created_at).getTime());
+    const oldestDate = dates.length > 0 ? Math.min(...dates) : Date.now();
+    const daySpan = Math.max(1, Math.ceil((Date.now() - oldestDate) / (1000 * 60 * 60 * 24)));
+    const frequencyValue = totalDeps > 0 ? (totalDeps / daySpan).toFixed(1) : "0";
+    const freqRating = parseFloat(frequencyValue) >= 1 ? 'Elite' : parseFloat(frequencyValue) >= 0.14 ? 'High' : 'Low';
 
-    // 2. Failure Rate
+    // 2. Change Failure Rate (CFR)
     const failureRate = totalDeps > 0 ? ((failedDeps / totalDeps) * 100).toFixed(1) + "%" : "0%";
     const cfrRating = failedDeps === 0 ? 'Elite' : (failedDeps / totalDeps) < 0.15 ? 'High' : 'Low';
 
-    // 3. Lead Time (Mocked as actual commit time is hard without GitHub API yet)
-    // We'll use avg duration as a proxy for "Build Time" in the UI for now
+    // 3. Avg Build Time (proxy for Lead Time - true Lead Time requires commit timestamps from GitHub)
     const avgDuration = totalDeps > 0
         ? Math.round(deployments.reduce((acc: number, d: any) => acc + (d.duration_seconds || 0), 0) / totalDeps)
         : 0;
 
-    // 4. MTTR (Mocked)
-    const mttrValue = "1h 12m"; // Placeholder until we have incident tracking
+    // 4. MTTR - Requires incident tracking (not yet implemented)
+    const mttrValue = "—"; // Placeholder until incident data is available
 
     const doraMetrics = {
-        deploymentFrequency: { value: `${frequencyValue}/day`, label: "Avg last 7 days", rating: freqRating as any },
-        leadTime: { value: `${avgDuration}s`, label: "Avg Build Time", rating: avgDuration < 120 ? 'Elite' : 'High' as any },
-        changeFailureRate: { value: failureRate, label: "Last 100 deploys", rating: cfrRating as any },
-        mttr: { value: mttrValue, label: "Avg Recovery", rating: 'Medium' as any }
+        deploymentFrequency: { value: `${frequencyValue}/day`, label: `Over ${daySpan} days`, rating: freqRating as any },
+        leadTime: { value: avgDuration > 0 ? `${avgDuration}s` : '—', label: "Avg Build Time", rating: avgDuration > 0 && avgDuration < 120 ? 'Elite' : avgDuration > 0 ? 'High' : 'Medium' as any },
+        changeFailureRate: { value: failureRate, label: `${totalDeps} deploys`, rating: cfrRating as any },
+        mttr: { value: mttrValue, label: "Coming Soon", rating: 'Medium' as any }
     };
 
     // --- Prepare Chart Data ---
