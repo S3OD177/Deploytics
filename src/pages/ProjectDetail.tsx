@@ -2,12 +2,13 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import { ArrowLeft, CheckCircle, XCircle, Clock, LayoutGrid, Users, Settings, Activity, RefreshCw } from 'lucide-react'
+import { ArrowLeft, LayoutGrid, Users, Settings, Activity, RefreshCw, Clock } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TeamManager } from "@/components/dashboard/TeamManager"
 import { ProjectSettings } from "@/components/dashboard/ProjectSettings"
+import { DeploymentList } from "@/components/dashboard/DeploymentList"
+import { SuccessRateChart } from "@/components/dashboard/SuccessRateChart"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
@@ -133,78 +134,23 @@ export default function ProjectDetail() {
                 </TabsList>
 
                 <TabsContent value="overview">
-                    <div className="p-12 border-2 border-dashed rounded-xl bg-card/30 text-center text-muted-foreground flex flex-col items-center gap-3">
-                        <LayoutGrid className="size-10 opacity-20" />
-                        <div>
-                            <p className="font-medium text-foreground">Project Analytics Overview</p>
-                            <p className="text-sm">Detailed charts and resource usage metrics coming soon.</p>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <SuccessRateChart deployments={deployments} />
+                        <div className="p-6 border rounded-xl bg-card text-muted-foreground flex flex-col items-center justify-center gap-2">
+                            <span className="text-2xl font-bold text-foreground">$0.00</span>
+                            <span className="text-xs uppercase font-bold tracking-wider">Est. Cost (MD)</span>
                         </div>
                     </div>
                 </TabsContent>
 
                 <TabsContent value="deployments">
-                    <div className="bg-card border rounded-xl overflow-hidden shadow-sm">
-                        <div className="p-6 border-b flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">Deployments History</h2>
-                            <Badge variant="outline" className="font-mono text-[10px]">{deployments.length} total</Badge>
-                        </div>
-                        <div className="divide-y max-h-[600px] overflow-y-auto">
-                            {deployments.length === 0 ? (
-                                <div className="p-12 text-center text-muted-foreground flex flex-col items-center gap-3">
-                                    <Clock className="size-8 opacity-20" />
-                                    <p>No deployments recorded yet</p>
-                                </div>
-                            ) : (
-                                deployments.map((deployment: any) => (
-                                    <div key={deployment.id} className="p-4 flex items-center gap-4 hover:bg-muted/30 transition-colors group">
-                                        <div className={cn(
-                                            "p-2.5 rounded-xl ring-1 ring-inset",
-                                            deployment.status === 'success'
-                                                ? 'bg-emerald-500/10 ring-emerald-500/20 text-emerald-500'
-                                                : deployment.status === 'failed'
-                                                    ? 'bg-red-500/10 ring-red-500/20 text-red-500'
-                                                    : 'bg-amber-500/10 ring-amber-500/20 text-amber-500'
-                                        )}>
-                                            {deployment.status === 'success' ? (
-                                                <CheckCircle className="h-4.5 w-4.5" />
-                                            ) : deployment.status === 'failed' ? (
-                                                <XCircle className="h-4.5 w-4.5" />
-                                            ) : (
-                                                <Clock className="h-4.5 w-4.5" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p className="font-bold truncate">{deployment.commit_message || 'Deployment'}</p>
-                                                {deployment.resolved_at && (
-                                                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 text-[9px] uppercase font-bold px-1.5 h-4">Resolved</Badge>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                                                <span className="font-mono bg-muted/50 px-1.5 rounded text-[10px] ring-1 ring-inset ring-border/50">{deployment.commit_hash?.substring(0, 7) || 'HEAD'}</span>
-                                                <span>•</span>
-                                                <span className="capitalize">{deployment.branch || 'main'}</span>
-                                            </div>
-                                        </div>
-                                        {deployment.status === 'failed' && !deployment.resolved_at && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity h-8 px-3 font-bold text-xs"
-                                                onClick={() => resolveMutation.mutate(deployment.id)}
-                                                disabled={resolveMutation.isPending}
-                                            >
-                                                Mark as Resolved
-                                            </Button>
-                                        )}
-                                        <div className="text-[11px] font-medium text-muted-foreground text-right">
-                                            <p>{new Date(deployment.created_at).toLocaleDateString()}</p>
-                                            <p className="opacity-70">{new Date(deployment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
+                    <div className="bg-card border rounded-xl overflow-hidden shadow-sm p-0 md:p-0 border-0 bg-transparent shadow-none">
+                        <DeploymentList
+                            deployments={deployments}
+                            projectId={id!}
+                            onResolve={(id) => resolveMutation.mutate(id)}
+                            isResolving={resolveMutation.isPending}
+                        />
                     </div>
                 </TabsContent>
 

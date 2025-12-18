@@ -13,6 +13,9 @@ import { format, subDays, startOfDay, isSameDay } from 'date-fns'
 import { Activity, ShieldCheck, Zap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { BadgesGallery } from '@/components/dashboard/BadgesGallery'
+import { CarbonFootprintCard } from '@/components/dashboard/CarbonFootprintCard'
+import { PredictiveInsights } from '@/components/dashboard/PredictiveInsights'
 
 export default function Overview() {
     const { user } = useAuth()
@@ -117,7 +120,7 @@ export default function Overview() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-300">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -175,6 +178,19 @@ export default function Overview() {
                             />
                         </svg>
                     </div>
+                </div>
+            </div>
+
+            {/* Phase 5: Innovation & Future (Gamification, AI, Sustainability) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-1">
+                    <BadgesGallery />
+                </div>
+                <div className="md:col-span-1">
+                    <PredictiveInsights />
+                </div>
+                <div className="md:col-span-1">
+                    <CarbonFootprintCard />
                 </div>
             </div>
 

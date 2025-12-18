@@ -70,11 +70,14 @@ export function AlertsConfig({ projects }: { projects: Project[] }) {
 function ProjectAlerts({ project }: { project: Project }) {
     const queryClient = useQueryClient();
     const [slackUrl, setSlackUrl] = useState("");
+    const [discordUrl, setDiscordUrl] = useState("");
     const [emailEnabled, setEmailEnabled] = useState(true);
     const [emailFailedEnabled, setEmailFailedEnabled] = useState(true);
     const [emailSuccessEnabled, setEmailSuccessEnabled] = useState(false);
     const [slackEnabled, setSlackEnabled] = useState(false);
     const [slackFailedEnabled, setSlackFailedEnabled] = useState(true);
+    const [discordEnabled, setDiscordEnabled] = useState(false);
+    const [discordFailedEnabled, setDiscordFailedEnabled] = useState(true);
 
     // Fetch existing rules for this project
     const { data: rules = [], isLoading } = useQuery({
@@ -93,6 +96,7 @@ function ProjectAlerts({ project }: { project: Project }) {
     useEffect(() => {
         const emailRule = rules.find((r: any) => r.channel_type === 'email');
         const slackRule = rules.find((r: any) => r.channel_type === 'slack');
+        const discordRule = rules.find((r: any) => r.channel_type === 'discord');
 
         if (emailRule) {
             setEmailEnabled(emailRule.enabled);
@@ -103,6 +107,11 @@ function ProjectAlerts({ project }: { project: Project }) {
             setSlackEnabled(slackRule.enabled);
             setSlackUrl(slackRule.config?.webhook_url || '');
             setSlackFailedEnabled(slackRule.events?.includes('deployment.failed') ?? true);
+        }
+        if (discordRule) {
+            setDiscordEnabled(discordRule.enabled);
+            setDiscordUrl(discordRule.config?.webhook_url || '');
+            setDiscordFailedEnabled(discordRule.events?.includes('deployment.failed') ?? true);
         }
     }, [rules]);
 
@@ -148,6 +157,16 @@ function ProjectAlerts({ project }: { project: Project }) {
         const events: string[] = [];
         if (slackFailedEnabled) events.push('deployment.failed');
         upsertRuleMutation.mutate({ channelType: 'slack', enabled: slackEnabled, config: { webhook_url: slackUrl }, events });
+    };
+
+    const handleSaveDiscord = () => {
+        if (!discordUrl.startsWith('https://discord.com/api/webhooks/')) {
+            toast.error("Please enter a valid Discord webhook URL");
+            return;
+        }
+        const events: string[] = [];
+        if (discordFailedEnabled) events.push('deployment.failed');
+        upsertRuleMutation.mutate({ channelType: 'discord', enabled: discordEnabled, config: { webhook_url: discordUrl }, events });
     };
 
     if (isLoading) {
@@ -231,8 +250,8 @@ function ProjectAlerts({ project }: { project: Project }) {
 
                 <div className="h-px bg-border" />
 
-                {/* Discord */}
-                <div className="flex flex-col gap-4 opacity-75">
+                {/* Discord Channel */}
+                <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-indigo-500/10 text-indigo-500 rounded-lg">
@@ -243,7 +262,26 @@ function ProjectAlerts({ project }: { project: Project }) {
                                 <p className="text-sm text-muted-foreground">Post to a Discord server.</p>
                             </div>
                         </div>
-                        <Badge variant="outline">Coming Soon</Badge>
+                        <Switch checked={discordEnabled} onCheckedChange={(v) => setDiscordEnabled(v)} />
+                    </div>
+
+                    <div className="pl-14 space-y-4">
+                        <div className="grid gap-2">
+                            <label className="text-xs font-medium uppercase text-muted-foreground">Webhook URL</label>
+                            <Input
+                                placeholder="https://discord.com/api/webhooks/..."
+                                value={discordUrl}
+                                onChange={(e) => setDiscordUrl(e.target.value)}
+                                className="font-mono text-sm"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <div className="flex items-center gap-2">
+                                <Checkbox id="discord-fail" checked={discordFailedEnabled} onCheckedChange={(v) => setDiscordFailedEnabled(!!v)} />
+                                <label htmlFor="discord-fail" className="text-sm">Failed Deployments</label>
+                            </div>
+                        </div>
+                        <Button size="sm" onClick={handleSaveDiscord} disabled={upsertRuleMutation.isPending}>Save Discord Config</Button>
                     </div>
                 </div>
             </div>
