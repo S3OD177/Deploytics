@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/hooks/useAuth'
 import { ThemeProvider } from '@/hooks/useTheme'
 import { CommandPalette } from '@/components/CommandPalette'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
 // Pages
 import Login from '@/pages/Login'
@@ -98,6 +99,7 @@ function AuthCallback() {
 }
 
 function App() {
+    useKeyboardShortcuts()
     return (
         <ThemeProvider>
             <AuthProvider>

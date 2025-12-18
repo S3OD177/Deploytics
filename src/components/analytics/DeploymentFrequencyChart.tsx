@@ -1,5 +1,5 @@
 
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,17 @@ export function DeploymentFrequencyChart({ data, period = '30d' }: ChartProps) {
                         </div>
                     ) : (
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data}>
+                            <AreaChart data={data}>
+                                <defs>
+                                    <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorFailed" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.4} />
                                 <XAxis
                                     dataKey="date"
@@ -57,20 +67,22 @@ export function DeploymentFrequencyChart({ data, period = '30d' }: ChartProps) {
                                     tickFormatter={(value) => `${value}`}
                                 />
                                 <Tooltip
-                                    cursor={{ fill: 'hsl(var(--muted) / 0.5)' }}
                                     content={({ active, payload }) => {
                                         if (active && payload && payload.length) {
                                             const data = payload[0].payload;
                                             return (
-                                                <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[0.70rem] uppercase text-muted-foreground">Success</span>
-                                                            <span className="font-bold text-emerald-500">{data.success}</span>
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-[0.70rem] uppercase text-muted-foreground">Failed</span>
-                                                            <span className="font-bold text-red-500">{data.failed}</span>
+                                                <div className="rounded-xl border border-border/50 bg-background/95 backdrop-blur-sm p-3 shadow-xl ring-1 ring-black/5 dark:ring-white/5">
+                                                    <div className="flex flex-col gap-2">
+                                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{data.date}</span>
+                                                        <div className="flex gap-4">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] uppercase text-emerald-500 font-bold">Success</span>
+                                                                <span className="text-sm font-bold">{data.success}</span>
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] uppercase text-red-500 font-bold">Failed</span>
+                                                                <span className="text-sm font-bold">{data.failed}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -79,21 +91,23 @@ export function DeploymentFrequencyChart({ data, period = '30d' }: ChartProps) {
                                         return null;
                                     }}
                                 />
-                                <Bar
+                                <Area
+                                    type="monotone"
                                     dataKey="success"
-                                    stackId="a"
-                                    fill="hsl(var(--primary))"
-                                    radius={[0, 0, 4, 4]}
-                                    maxBarSize={40}
+                                    stroke="hsl(var(--primary))"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorSuccess)"
                                 />
-                                <Bar
+                                <Area
+                                    type="monotone"
                                     dataKey="failed"
-                                    stackId="a"
-                                    fill="hsl(var(--destructive))"
-                                    radius={[4, 4, 0, 0]}
-                                    maxBarSize={40}
+                                    stroke="hsl(var(--destructive))"
+                                    strokeWidth={2}
+                                    fillOpacity={1}
+                                    fill="url(#colorFailed)"
                                 />
-                            </BarChart>
+                            </AreaChart>
                         </ResponsiveContainer>
                     )}
                 </div>

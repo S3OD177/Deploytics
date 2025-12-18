@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { DoraMetricsCards } from '@/components/analytics/DoraMetricsCards'
 import { DeploymentFrequencyChart } from '@/components/analytics/DeploymentFrequencyChart'
+import { AiInsights } from '@/components/analytics/AiInsights'
 import { TimelineFeed } from '@/components/dashboard/TimelineFeed'
 import { NewProjectDialog } from '@/components/dashboard/NewProjectDialog'
 import { ProjectCard } from '@/components/dashboard/ProjectCard'
@@ -11,6 +12,7 @@ import { EmptyState } from '@/components/dashboard/EmptyState'
 import { format, subDays, startOfDay, isSameDay } from 'date-fns'
 import { Activity, ShieldCheck, Zap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 export default function Overview() {
     const { user } = useAuth()
@@ -146,21 +148,10 @@ export default function Overview() {
             {/* DORA Metrics */}
             <DoraMetricsCards metrics={doraMetrics} />
 
-            {/* Live Activity & Quick Actions */}
+            {/* AI Insights & Capacity */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-3 bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:bg-primary/10 transition-colors cursor-default">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2.5 bg-primary/20 rounded-lg text-primary group-hover:scale-110 transition-transform">
-                            <Zap className="size-5 fill-primary" />
-                        </div>
-                        <div>
-                            <p className="text-sm font-bold uppercase tracking-wider text-primary/70">Optimization Tip</p>
-                            <p className="text-sm text-foreground/80">Average lead time is high for 2 projects. Consider reviewing CI/CD pipepline caches.</p>
-                        </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10">
-                        View Recommendations
-                    </Button>
+                <div className="md:col-span-3">
+                    <AiInsights metrics={doraMetrics} />
                 </div>
                 <div className="md:col-span-1 bg-card border rounded-xl p-4 flex items-center justify-between">
                     <div className="flex flex-col">
