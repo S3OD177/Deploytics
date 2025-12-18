@@ -1,9 +1,10 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { IntegrationsManager } from '@/components/dashboard/IntegrationsManager'
 import { IntegrationService } from '@/lib/integrations'
-import { Loader2 } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Integrations() {
     const { user } = useAuth()
@@ -100,8 +101,41 @@ export default function Integrations() {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center p-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="space-y-8">
+                <div>
+                    <Skeleton className="h-10 w-48 mb-2" />
+                    <Skeleton className="h-5 w-96" />
+                </div>
+
+                {/* Stats Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="p-4 rounded-xl border bg-card shadow-sm h-24">
+                            <Skeleton className="h-4 w-32 mb-3" />
+                            <Skeleton className="h-8 w-16" />
+                        </div>
+                    ))}
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="h-[280px] rounded-xl border bg-card/50 p-6 space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div className="flex gap-4">
+                                    <Skeleton className="h-12 w-12 rounded-xl" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-5 w-32" />
+                                        <Skeleton className="h-4 w-48" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-2 pt-4">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-3/4" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         )
     }

@@ -12,6 +12,7 @@ import Alerts from '@/pages/Alerts'
 import Settings from '@/pages/Settings'
 import Integrations from '@/pages/Integrations'
 import Billing from '@/pages/Billing'
+import StatusPage from '@/pages/StatusPage'
 import NotFound from '@/pages/NotFound'
 
 // Layout
@@ -60,6 +61,9 @@ function AppRoutes() {
                 <Route path="integrations" element={<Integrations />} />
                 <Route path="billing" element={<Billing />} />
             </Route>
+
+            {/* Public Status Page (No Auth) */}
+            <Route path="/status/:projectId" element={<StatusPage />} />
 
             {/* Auth Callback */}
             <Route path="/auth/callback" element={<AuthCallback />} />

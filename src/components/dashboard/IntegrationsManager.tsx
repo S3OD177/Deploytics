@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader2, Check, ExternalLink, Unplug, Info } from "lucide-react";
+import { Loader2, Check, ExternalLink, Unplug, Info, RefreshCw, Search } from "lucide-react";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -198,207 +198,299 @@ export function IntegrationsManager({
         });
     };
 
+    const [searchQuery, setSearchQuery] = useState("");
+    const [activeTab, setActiveTab] = useState("all");
+
+    // Add categories to your INTEGRATIONS constant items first:
+    // ... we need to do that via a wider refactor, or we can map them dynamically here.
+    // For now, let's inject a helper to determine category.
+    const getCategory = (id: string) => {
+        if (['github'].includes(id)) return 'code';
+        if (['vercel', 'netlify', 'render'].includes(id)) return 'hosting';
+        if (['supabase', 'railway'].includes(id)) return 'database';
+        return 'other';
+    };
+
+    const filteredIntegrations = INTEGRATIONS.filter(integration => {
+        const matchesSearch = integration.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            integration.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesTab = activeTab === 'all' || getCategory(integration.id) === activeTab;
+        return matchesSearch && matchesTab;
+    });
+
     return (
-        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            {INTEGRATIONS.map((integration) => {
-                const status = getIntegrationStatus(integration.id);
-                const isConnected = status?.status === 'connected';
-                const isExpanded = expandedId === integration.id;
-                const Icon = integration.icon;
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-end sm:items-center">
+                {/* Tabs */}
+                <div className="flex p-1 bg-muted/50 border border-border rounded-lg gap-1 w-full sm:w-auto overflow-x-auto">
+                    {[
+                        { id: "all", label: "All Apps" },
+                        { id: "code", label: "Git & Code" },
+                        { id: "hosting", label: "Hosting" },
+                        { id: "database", label: "Database" },
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={cn(
+                                "flex-1 sm:flex-none px-4 py-1.5 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap",
+                                activeTab === tab.id
+                                    ? "bg-background text-foreground shadow-sm ring-1 ring-black/5 dark:ring-white/10"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                            )}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
 
-                // Initialize scopes if not set
-                const currentScopes = selectedScopes[integration.id] || integration.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
+                {/* Search */}
+                <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search integrations..."
+                        className="pl-9 h-9 bg-background/50 focus:bg-background transition-colors"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+            </div>
 
-                return (
-                    <Card
-                        key={integration.id}
-                        className={cn(
-                            "relative overflow-hidden transition-all duration-300 border-border/50 bg-card/50 hover:bg-card hover:border-border",
-                            isExpanded && "ring-1 ring-primary border-primary/50 shadow-lg scale-[1.01]",
-                            integration.comingSoon && "opacity-60"
-                        )}
-                    >
-                        {isConnected && (
-                            <div className="absolute inset-0 pointer-events-none z-0">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
-                            </div>
-                        )}
+            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 animate-in fade-in zoom-in-95 duration-300">
+                {filteredIntegrations.map((integration) => {
+                    const status = getIntegrationStatus(integration.id);
+                    const isConnected = status?.status === 'connected';
+                    const isExpanded = expandedId === integration.id;
+                    const Icon = integration.icon;
 
-                        <CardHeader className="pb-4">
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className={cn("p-3 rounded-xl shadow-sm ring-1 ring-inset ring-white/10", integration.bgColor)}>
-                                        <Icon className={cn("size-6", integration.color)} />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-lg flex items-center gap-2">
-                                            {integration.name}
-                                            {integration.comingSoon && (
-                                                <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-medium">Soon</Badge>
-                                            )}
-                                        </CardTitle>
-                                        <CardDescription className="text-sm mt-1 line-clamp-2">
-                                            {integration.description}
-                                        </CardDescription>
-                                    </div>
-                                </div>
-                                {isConnected && (
-                                    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5 h-6">
-                                        <Check className="size-3.5 mr-1.5" />
-                                        Connected
-                                    </Badge>
-                                )}
-                            </div>
-                        </CardHeader>
+                    // Initialize scopes if not set
+                    const currentScopes = selectedScopes[integration.id] || integration.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
 
-                        <CardContent className="pt-0 space-y-4">
-                            {/* Fetch Options - View Mode (What we fetch currently or what is possible) */}
-                            {!isExpanded && !integration.comingSoon && (
-                                <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
-                                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
-                                        <Info className="size-3.5" />
-                                        {isConnected ? "ACTIVELY SYNCING" : "WHAT WE FETCH"}
-                                    </div>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {(isConnected
-                                            ? integration.fetchOptions?.filter(o => status?.config?.selected_scopes?.includes(o.id))
-                                            : integration.fetchOptions?.filter(o => o.default)
-                                        )?.map((option) => (
-                                            <Badge key={option.id} variant="secondary" className="text-[10px] px-2 h-5 bg-secondary/50 font-normal">
-                                                {option.label}
-                                            </Badge>
-                                        ))}
-                                        {isConnected && (status?.config?.selected_scopes?.length || 0) < (integration.fetchOptions?.length || 0) && (
-                                            <span className="text-[10px] text-muted-foreground self-center ml-1">
-                                                +{(integration.fetchOptions?.length || 0) - (status?.config?.selected_scopes?.length || 0)} more available
-                                            </span>
-                                        )}
-                                    </div>
+                    return (
+                        <Card
+                            key={integration.id}
+                            className={cn(
+                                "relative overflow-hidden transition-all duration-300 border-border/50 bg-card/50 hover:bg-card hover:border-border",
+                                isExpanded && "ring-1 ring-primary border-primary/50 shadow-lg scale-[1.01]",
+                                integration.comingSoon && "opacity-60"
+                            )}
+                        >
+                            {isConnected && (
+                                <div className="absolute inset-0 pointer-events-none z-0">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                    <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
                                 </div>
                             )}
 
-                            {isExpanded && !integration.comingSoon ? (
-                                <div className="space-y-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-
-                                    {/* Data Selection */}
-                                    <div className="space-y-3">
-                                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
-                                            Select Data to Sync
-                                        </span>
-                                        <div className="grid grid-cols-1 gap-2">
-                                            {integration.fetchOptions?.map((option) => (
-                                                <div
-                                                    key={option.id}
-                                                    className={cn(
-                                                        "flex items-start gap-3 p-2 rounded-lg border transition-colors cursor-pointer",
-                                                        currentScopes.includes(option.id)
-                                                            ? "bg-primary/5 border-primary/20"
-                                                            : "bg-transparent border-border hover:bg-muted/50"
-                                                    )}
-                                                    onClick={() => toggleScope(integration.id, option.id)}
-                                                >
-                                                    <Checkbox
-                                                        id={`${integration.id}-${option.id}`}
-                                                        checked={currentScopes.includes(option.id)}
-                                                        onCheckedChange={() => toggleScope(integration.id, option.id)}
-                                                        className="mt-0.5"
-                                                    />
-                                                    <div className="space-y-0.5">
-                                                        <label
-                                                            htmlFor={`${integration.id}-${option.id}`}
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                                                        >
-                                                            {option.label}
-                                                        </label>
-                                                        <p className="text-[11px] text-muted-foreground">
-                                                            {option.description}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))}
+                            <CardHeader className="pb-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className={cn("p-3 rounded-xl shadow-sm ring-1 ring-inset ring-white/10", integration.bgColor)}>
+                                            <Icon className={cn("size-6", integration.color)} />
+                                        </div>
+                                        <div>
+                                            <CardTitle className="text-lg flex items-center gap-2 group">
+                                                {integration.name}
+                                                {!integration.comingSoon && (
+                                                    <a
+                                                        href={integration.docsUrl}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary p-0.5 rounded-md hover:bg-muted"
+                                                        title="Go to Provider Settings"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <ExternalLink className="size-3.5" />
+                                                    </a>
+                                                )}
+                                                {integration.comingSoon && (
+                                                    <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-medium">Soon</Badge>
+                                                )}
+                                            </CardTitle>
+                                            <CardDescription className="text-sm mt-1 line-clamp-2">
+                                                {integration.description}
+                                            </CardDescription>
                                         </div>
                                     </div>
+                                    {isConnected && (
+                                        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-2 py-0.5 h-6">
+                                            <Check className="size-3.5 mr-1.5" />
+                                            Connected
+                                        </Badge>
+                                    )}
+                                </div>
+                            </CardHeader>
 
-                                    {/* Connection Steps */}
-                                    <div className="space-y-2 pt-2 border-t border-border/50">
-                                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
-                                            Authentication
-                                        </span>
-                                        <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed pl-1">
-                                            {integration.steps.map((step, i) => (
-                                                <li key={i} className="flex gap-2">
-                                                    <span className="font-mono text-primary/70">{i + 1}.</span>
-                                                    <span>{step}</span>
-                                                </li>
+                            <CardContent className="pt-0 space-y-4">
+                                {/* Fetch Options - View Mode (What we fetch currently or what is possible) */}
+                                {!isExpanded && !integration.comingSoon && (
+                                    <div className="bg-muted/30 rounded-lg p-3 border border-border/50">
+                                        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-2">
+                                            <Info className="size-3.5" />
+                                            {isConnected ? "ACTIVELY SYNCING" : "WHAT WE FETCH"}
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {(isConnected
+                                                ? integration.fetchOptions?.filter(o => status?.config?.selected_scopes?.includes(o.id))
+                                                : integration.fetchOptions?.filter(o => o.default)
+                                            )?.map((option) => (
+                                                <Badge key={option.id} variant="secondary" className="text-[10px] px-2 h-5 bg-secondary/50 font-normal">
+                                                    {option.label}
+                                                </Badge>
                                             ))}
-                                        </ol>
+                                            {isConnected && (status?.config?.selected_scopes?.length || 0) < (integration.fetchOptions?.length || 0) && (
+                                                <span className="text-[10px] text-muted-foreground self-center ml-1">
+                                                    +{(integration.fetchOptions?.length || 0) - (status?.config?.selected_scopes?.length || 0)} more available
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
+                                )}
 
-                                    {/* Input Area */}
-                                    <div className="space-y-3">
-                                        <Input
-                                            type="password"
-                                            placeholder={integration.placeholder}
-                                            value={tokens[integration.id] || ''}
-                                            onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
-                                            className="h-9 text-sm font-mono bg-background"
-                                        />
-                                        <div className="flex gap-2">
-                                            <Button
-                                                size="sm"
-                                                className="flex-1"
-                                                onClick={() => handleConnect(integration.id)}
-                                                disabled={isPending}
-                                            >
-                                                {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
-                                            </Button>
+                                {isExpanded && !integration.comingSoon ? (
+                                    <div className="space-y-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+
+                                        {/* Data Selection */}
+                                        <div className="space-y-3">
+                                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+                                                Select Data to Sync
+                                            </span>
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {integration.fetchOptions?.map((option) => (
+                                                    <div
+                                                        key={option.id}
+                                                        className={cn(
+                                                            "flex items-start gap-3 p-2 rounded-lg border transition-colors cursor-pointer",
+                                                            currentScopes.includes(option.id)
+                                                                ? "bg-primary/5 border-primary/20"
+                                                                : "bg-transparent border-border hover:bg-muted/50"
+                                                        )}
+                                                        onClick={() => toggleScope(integration.id, option.id)}
+                                                    >
+                                                        <Checkbox
+                                                            id={`${integration.id}-${option.id}`}
+                                                            checked={currentScopes.includes(option.id)}
+                                                            onCheckedChange={() => toggleScope(integration.id, option.id)}
+                                                            className="mt-0.5"
+                                                        />
+                                                        <div className="space-y-0.5">
+                                                            <label
+                                                                htmlFor={`${integration.id}-${option.id}`}
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                                            >
+                                                                {option.label}
+                                                            </label>
+                                                            <p className="text-[11px] text-muted-foreground">
+                                                                {option.description}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Connection Steps */}
+                                        <div className="space-y-2 pt-2 border-t border-border/50">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                                    Authentication
+                                                </span>
+                                                <a
+                                                    href={integration.docsUrl}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-[10px] text-primary hover:underline flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity"
+                                                >
+                                                    Get API Key <ExternalLink className="size-3" />
+                                                </a>
+                                            </div>
+                                            <ol className="text-xs space-y-2 text-muted-foreground leading-relaxed pl-1">
+                                                {integration.steps.map((step, i) => (
+                                                    <li key={i} className="flex gap-2">
+                                                        <span className="font-mono text-primary/70">{i + 1}.</span>
+                                                        <span>{step}</span>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        </div>
+
+                                        {/* Input Area */}
+                                        <div className="space-y-3">
+                                            <Input
+                                                type="password"
+                                                placeholder={integration.placeholder}
+                                                value={tokens[integration.id] || ''}
+                                                onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
+                                                className="h-9 text-sm font-mono bg-background"
+                                            />
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    className="flex-1"
+                                                    onClick={() => handleConnect(integration.id)}
+                                                    disabled={isPending}
+                                                >
+                                                    {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => setExpandedId(null)}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="pt-2">
+                                        {isConnected ? (
+                                            <div className="flex gap-2">
+                                                <div className="flex gap-2 flex-1">
+                                                    <Button size="sm" variant="outline" className="flex-1 text-xs h-8" onClick={() => {
+                                                        toast.promise(new Promise(resolve => setTimeout(resolve, 2000)), {
+                                                            loading: 'Syncing...',
+                                                            success: 'Synced successfully',
+                                                            error: 'Failed to sync'
+                                                        });
+                                                    }}>
+                                                        <RefreshCw className="size-3 mr-1.5" />
+                                                        Sync Now
+                                                    </Button>
+                                                    <Button size="sm" variant="ghost" className="text-[10px] text-muted-foreground h-8 px-2" disabled>
+                                                        {status?.last_synced_at ? 'Synced just now' : 'Never synced'}
+                                                    </Button>
+                                                </div>
+                                                <TooltipProvider delayDuration={0}>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button size="sm" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10 p-0">
+                                                                <Unplug className="size-4" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Disconnect & Revoke Access</TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            </div>
+                                        ) : (
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                onClick={() => setExpandedId(null)}
+                                                className="w-full h-9"
+                                                onClick={() => !integration.comingSoon && setExpandedId(integration.id)}
+                                                disabled={integration.comingSoon}
                                             >
-                                                Cancel
+                                                {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}
                                             </Button>
-                                        </div>
+                                        )}
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="pt-2">
-                                    {isConnected ? (
-                                        <div className="flex gap-2">
-                                            <Button size="sm" variant="outline" className="flex-1 text-xs h-8" disabled>
-                                                <Check className="size-3 mr-1" />
-                                                Synced {status?.last_synced_at ? 'recently' : 'never'}
-                                            </Button>
-                                            <TooltipProvider delayDuration={0}>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button size="sm" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10 p-0">
-                                                            <Unplug className="size-4" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>Disconnect & Revoke Access</TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
-                                        </div>
-                                    ) : (
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            className="w-full h-9"
-                                            onClick={() => !integration.comingSoon && setExpandedId(integration.id)}
-                                            disabled={integration.comingSoon}
-                                        >
-                                            {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}
-                                        </Button>
-                                    )}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                );
-            })}
+                                )}
+                            </CardContent>
+                        </Card>
+                    );
+                })}
+            </div>
         </div>
     );
 }

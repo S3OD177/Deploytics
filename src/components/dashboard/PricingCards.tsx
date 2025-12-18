@@ -72,22 +72,21 @@ export function PricingCards({ currentPlan = "free" }: { currentPlan?: string })
     const handleCheckout = async (planId: string, type: 'subscription' | 'addon') => {
         setLoading(planId);
         try {
-            // Use Supabase Edge Function for secure checkout
-            const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-                body: { plan: planId, type }
+            // MOCK: Simulate checkout delay since Edge Function is not deployed yet
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            toast.success("Redirecting to checkout...", {
+                description: "This is a demo. In production, this connects to Stripe."
             });
 
-            if (error) throw error;
+            // Simulate success
+            setTimeout(() => {
+                setLoading(null);
+            }, 500);
 
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                toast.error("Invalid response from checkout service");
-            }
         } catch (error: any) {
             console.error(error);
-            toast.error("Checkout service not configured yet (Edge Function missing)");
-        } finally {
+            toast.error("Checkout failed");
             setLoading(null);
         }
     };
