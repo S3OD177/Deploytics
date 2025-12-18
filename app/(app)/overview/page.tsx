@@ -1,22 +1,38 @@
-
 import { createClient } from "@/utils/supabase/server";
 import { OverviewStats } from "@/components/dashboard/OverviewStats";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { NewProjectDialog } from "@/components/dashboard/NewProjectDialog";
+
+const PLAN_LIMITS = {
+    free: 3,
+    pro: 10,
+    enterprise: 25,
+};
 
 export default async function OverviewPage() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
+    // Fetch Subscription
+    const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('plan, extra_projects')
+        .eq('user_id', user?.id)
+        .single();
+
+    const plan = subscription?.plan || 'free';
+    const extraProjects = subscription?.extra_projects || 0;
+    const maxProjects = (PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS] || 3) + extraProjects;
+
     // Fetch Projects
-    const { data: projectsData, error: projError } = await supabase
+    const { data: projectsData } = await supabase
         .from('projects')
         .select(`
       id, 
       name, 
       status, 
       tier,
+      created_at,
       deployments (
         id,
         status,
@@ -29,6 +45,7 @@ export default async function OverviewPage() {
 
     // Calculate Stats
     const totalProjects = projectsData?.length || 0;
+    const canCreate = totalProjects < maxProjects;
 
     // Trends using real timestamps
     const now = new Date();
@@ -55,10 +72,11 @@ export default async function OverviewPage() {
                         Welcome back, <span className="text-foreground font-medium">{user?.email?.split('@')[0] || 'User'}</span>
                     </p>
                 </div>
-                <Button className="font-medium shadow-none">
-                    <Plus className="mr-2 size-4" />
-                    New Project
-                </Button>
+                <NewProjectDialog
+                    canCreate={canCreate}
+                    maxProjects={maxProjects}
+                    currentProjects={totalProjects}
+                />
             </div>
 
             {/* Stats Row */}
@@ -78,7 +96,7 @@ export default async function OverviewPage() {
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     Your Projects
                     <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                        {totalProjects}
+                        {totalProjects} / {maxProjects}
                     </span>
                 </h3>
                 {projectsData && projectsData.length > 0 ? (

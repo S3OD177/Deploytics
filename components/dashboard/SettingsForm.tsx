@@ -6,7 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-export function SettingsForm() {
+interface SettingsFormProps {
+    userEmail: string;
+    userPlan?: string;
+}
+
+export function SettingsForm({ userEmail, userPlan = "Free" }: SettingsFormProps) {
     return (
         <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-8 pb-20">
             {/* Breadcrumbs & Heading */}
@@ -37,7 +42,7 @@ export function SettingsForm() {
                                 className="w-full bg-background border-border py-2.5 pl-10 pr-4 text-sm cursor-not-allowed opacity-75"
                                 disabled
                                 type="email"
-                                defaultValue="alex.dev@example.com"
+                                defaultValue={userEmail}
                             />
                         </div>
                     </div>
@@ -46,7 +51,7 @@ export function SettingsForm() {
                         <div className="flex items-center h-[40px]">
                             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/20 text-primary border border-primary/20">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                                Developer Pro
+                                {userPlan}
                             </span>
                         </div>
                     </div>

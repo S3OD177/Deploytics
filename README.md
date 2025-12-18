@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevPulse
+
+**Your Unified DevOps Dashboard** - Monitor GitHub, Vercel, Supabase, and more in one place.
+
+## Features
+
+- 📊 **Real-time Deployment Tracking** - Monitor builds across all platforms
+- 💰 **Cost Awareness** - Track spending before bills surprise you
+- 🔔 **Instant Alerts** - Get notified for failed deployments
+- 👥 **Team Collaboration** - Role-based access for your team
+- 🔌 **Multi-Platform** - GitHub, Vercel, Supabase, Netlify, Railway, Render
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Database**: Supabase (Postgres + RLS)
+- **Auth**: Supabase Auth (OAuth)
+- **Payments**: Polar.sh
+- **UI**: Tailwind CSS + shadcn/ui
+- **Icons**: Lucide React
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/S3OD177/Deploytics.git
+cd Deploytics
+npm install
+```
+
+### 2. Environment Variables
+
+Create `.env.local`:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Polar.sh (Optional - for payments)
+POLAR_ACCESS_TOKEN=
+POLAR_WEBHOOK_SECRET=
+POLAR_PRO_PRODUCT_ID=
+POLAR_ENTERPRISE_PRODUCT_ID=
+POLAR_ADDON_5_PRODUCT_ID=
+POLAR_ADDON_10_PRODUCT_ID=
+
+# Webhooks
+VERCEL_WEBHOOK_SECRET=
+```
+
+### 3. Database Migrations
+
+Apply migrations to your Supabase project:
+
+```bash
+npx supabase db push
+```
+
+Or run each migration file in `supabase/migrations/` manually.
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel
 
-## Learn More
+1. Push to GitHub
+2. Import in Vercel
+3. Add environment variables
+4. Deploy!
 
-To learn more about Next.js, take a look at the following resources:
+### Webhook Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Configure webhooks in your providers:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Vercel**: Settings → Webhooks → Add `https://your-domain.com/api/webhooks/vercel`
+- **Polar.sh**: Developers → Webhooks → Add `https://your-domain.com/api/webhooks/polar`
 
-## Deploy on Vercel
+## Pricing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Plan | Price | Projects | Team |
+|------|-------|----------|------|
+| Free | $0 | 3 | 1 |
+| Pro | $9/mo | 10 | 5 |
+| Enterprise | $29/mo | 25 | 15 |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Add-ons**: +5 Projects ($19), +10 Projects ($29)
+
+## License
+
+MIT
+
+---
+
+Built with ❤️ using Next.js and Supabase
