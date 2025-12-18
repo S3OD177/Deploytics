@@ -8,6 +8,10 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-vercel-signature',
 }
 
+function hexToUint8Array(hexString: string) {
+    return new Uint8Array(hexString.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+}
+
 serve(async (req) => {
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
@@ -19,8 +23,31 @@ serve(async (req) => {
             return new Response(JSON.stringify({ error: 'Missing signature' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
         }
 
-        // In a real verification, we would check the signature against a secret.
-        // For this 'Client-Read' phase, we will just proceed but log it.
+        const secret = Deno.env.get('VERCEL_WEBHOOK_SECRET');
+        if (secret) {
+            const encoder = new TextEncoder();
+            const key = await crypto.subtle.importKey(
+                "raw",
+                encoder.encode(secret),
+                { name: "HMAC", hash: "SHA-1" },
+                false,
+                ["verify"]
+            );
+
+            const rawBody = await req.clone().text(); // Need raw text for verification
+            const verified = await crypto.subtle.verify(
+                "HMAC",
+                key,
+                hexToUint8Array(signature),
+                encoder.encode(rawBody)
+            );
+
+            if (!verified) {
+                return new Response(JSON.stringify({ error: 'Invalid signature' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+            }
+        } else {
+            console.warn("Skipping signature verification: VERCEL_WEBHOOK_SECRET not set");
+        }
 
         const body = await req.json();
 

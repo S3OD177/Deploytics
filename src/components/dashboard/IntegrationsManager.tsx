@@ -32,74 +32,7 @@ import {
 } from "@/components/ui/select";
 import { integrationDefinitions, IntegrationDefinition } from "@/lib/integrations-data";
 
-// Detailed configuration for "Real" integrations
-const DETAILED_INTEGRATIONS = [
-    {
-        id: "github",
-        color: "text-white",
-        bgColor: "bg-zinc-900",
-        docsUrl: "https://github.com/settings/tokens",
-        placeholder: "ghp_xxxxxxxxxxxx",
-        fieldName: "access_token",
-        fetchOptions: [
-            { id: "repos", label: "Repositories", description: "Read-only access to repository metadata", default: true },
-            { id: "commits", label: "Commits", description: "Sync commit history and authors", default: true },
-            { id: "prs", label: "Pull Requests", description: "Track PR status and reviews", default: true },
-            { id: "actions", label: "Actions", description: "Monitor workflow runs and status", default: true },
-            { id: "issues", label: "Issues", description: "Track open issues and bugs", default: false },
-        ],
-        steps: [
-            "Go to GitHub Settings > Developer settings",
-            "Select 'Personal access tokens' > 'Tokens (classic)'",
-            "Generate new token with 'repo' scope",
-            "Copy and paste the token here"
-        ]
-    },
-    {
-        id: "vercel",
-        color: "text-black dark:text-white",
-        bgColor: "bg-white dark:bg-black",
-        docsUrl: "https://vercel.com/account/tokens",
-        placeholder: "xxxxxxxxxxxxxxxx",
-        fieldName: "access_token",
-        fetchOptions: [
-            { id: "deployments", label: "Deployments", description: "Status, duration, and commit info", default: true },
-            { id: "domains", label: "Domains", description: "DNS configuration and SSL status", default: true },
-            { id: "logs", label: "Build Logs", description: "Error logs and build output", default: false },
-            { id: "analytics", label: "Web Vitals", description: "Real-time performance metrics", default: false },
-        ],
-        steps: [
-            "Navigate to Vercel Account Settings",
-            "Go to the 'Tokens' section",
-            "Create a new token with 'Full Access'",
-            "Copy the token secret"
-        ]
-    },
-    {
-        id: "supabase",
-        color: "text-emerald-400",
-        bgColor: "bg-emerald-950",
-        docsUrl: "https://supabase.com/dashboard/account/tokens",
-        placeholder: "sbp_xxxxxxxxxxxx",
-        fieldName: "access_token",
-        fetchOptions: [
-            { id: "database", label: "Database Health", description: "Size, connections, and cache hit rate", default: true },
-            { id: "auth", label: "Auth Stats", description: "Active users and sign-ins", default: true },
-            { id: "storage", label: "Storage", description: "Bucket usage and bandwidth", default: false },
-            { id: "functions", label: "Edge Functions", description: "Invocations and error rates", default: false },
-        ],
-        steps: [
-            "Go to Supabase Dashboard > Account",
-            "Select 'Access Tokens'",
-            "Generate a new token",
-            "Copy the resulting API key"
-        ]
-    },
-    // Add basic details for coming soon items to ensure they render nicely if expanded
-    { id: "netlify", color: "text-teal-400", bgColor: "bg-teal-950" },
-    { id: "railway", color: "text-purple-400", bgColor: "bg-purple-950" },
-    { id: "render", color: "text-blue-400", bgColor: "bg-blue-950" },
-];
+
 
 interface IntegrationData {
     id: string;
@@ -182,22 +115,19 @@ export function IntegrationsManager({
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState("All");
 
-    // Merge Definitions
+    // Local state for merged definitions not needed anymore since they are centralized
     const mergedIntegrations = useMemo(() => {
-        return integrationDefinitions.map(def => {
-            const detailed = DETAILED_INTEGRATIONS.find(d => d.id === def.id);
-            return {
-                ...def,
-                ...detailed,
-                // Ensure defaults for missing details
-                steps: detailed?.steps || ["Integration coming soon."],
-                fetchOptions: detailed?.fetchOptions || [],
-                color: detailed?.color || "text-primary",
-                bgColor: detailed?.bgColor || "bg-secondary",
-                comingSoon: def.status !== 'available',
-            };
-        });
+        return integrationDefinitions.map(def => ({
+            ...def,
+            // Ensure defaults are safe even if data file has missing fields
+            steps: def.steps || ["Integration instructions coming soon."],
+            fetchOptions: def.fetchOptions || [],
+            color: def.color || "text-primary",
+            bgColor: def.bgColor || "bg-secondary",
+            comingSoon: def.status !== 'available',
+        }));
     }, []);
+
 
     // Unique Categories
     const categories = useMemo(() => ["All", ...Array.from(new Set(integrationDefinitions.map(i => i.category)))], []);

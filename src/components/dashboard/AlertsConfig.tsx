@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Mail, Hash, Plus, Info, Bell, BellOff, MessageSquare } from "lucide-react";
+import { Mail, Hash, Plus, Info, Bell, BellOff, MessageSquare, Phone, Users } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,6 +78,12 @@ function ProjectAlerts({ project }: { project: Project }) {
     const [slackFailedEnabled, setSlackFailedEnabled] = useState(true);
     const [discordEnabled, setDiscordEnabled] = useState(false);
     const [discordFailedEnabled, setDiscordFailedEnabled] = useState(true);
+    const [teamsUrl, setTeamsUrl] = useState("");
+    const [teamsEnabled, setTeamsEnabled] = useState(false);
+    const [teamsFailedEnabled, setTeamsFailedEnabled] = useState(true);
+    const [smsPhone, setSmsPhone] = useState("");
+    const [smsEnabled, setSmsEnabled] = useState(false);
+    const [smsFailedEnabled, setSmsFailedEnabled] = useState(true);
 
     // Fetch existing rules for this project
     const { data: rules = [], isLoading } = useQuery({
@@ -97,6 +103,8 @@ function ProjectAlerts({ project }: { project: Project }) {
         const emailRule = rules.find((r: any) => r.channel_type === 'email');
         const slackRule = rules.find((r: any) => r.channel_type === 'slack');
         const discordRule = rules.find((r: any) => r.channel_type === 'discord');
+        const teamsRule = rules.find((r: any) => r.channel_type === 'teams');
+        const smsRule = rules.find((r: any) => r.channel_type === 'sms');
 
         if (emailRule) {
             setEmailEnabled(emailRule.enabled);
@@ -112,6 +120,16 @@ function ProjectAlerts({ project }: { project: Project }) {
             setDiscordEnabled(discordRule.enabled);
             setDiscordUrl(discordRule.config?.webhook_url || '');
             setDiscordFailedEnabled(discordRule.events?.includes('deployment.failed') ?? true);
+        }
+        if (teamsRule) {
+            setTeamsEnabled(teamsRule.enabled);
+            setTeamsUrl(teamsRule.config?.webhook_url || '');
+            setTeamsFailedEnabled(teamsRule.events?.includes('deployment.failed') ?? true);
+        }
+        if (smsRule) {
+            setSmsEnabled(smsRule.enabled);
+            setSmsPhone(smsRule.config?.phone_number || '');
+            setSmsFailedEnabled(smsRule.events?.includes('deployment.failed') ?? true);
         }
     }, [rules]);
 
@@ -142,6 +160,7 @@ function ProjectAlerts({ project }: { project: Project }) {
         }
     });
 
+    // HANDLERS
     const handleSaveEmail = () => {
         const events: string[] = [];
         if (emailFailedEnabled) events.push('deployment.failed');
@@ -167,6 +186,27 @@ function ProjectAlerts({ project }: { project: Project }) {
         const events: string[] = [];
         if (discordFailedEnabled) events.push('deployment.failed');
         upsertRuleMutation.mutate({ channelType: 'discord', enabled: discordEnabled, config: { webhook_url: discordUrl }, events });
+    };
+
+    const handleSaveTeams = () => {
+        // Basic validation for Teams/Office webhook
+        if (!teamsUrl.startsWith('https://') || (!teamsUrl.includes('outlook.office.com') && !teamsUrl.includes('webhook.office.com'))) {
+            toast.error("Please enter a valid Microsoft Teams webhook URL");
+            return;
+        }
+        const events: string[] = [];
+        if (teamsFailedEnabled) events.push('deployment.failed');
+        upsertRuleMutation.mutate({ channelType: 'teams', enabled: teamsEnabled, config: { webhook_url: teamsUrl }, events });
+    };
+
+    const handleSaveSms = () => {
+        if (!smsPhone.match(/^\+[1-9]\d{1,14}$/)) {
+            toast.error("Please enter a valid phone number (E.164 format, e.g., +1234567890)");
+            return;
+        }
+        const events: string[] = [];
+        if (smsFailedEnabled) events.push('deployment.failed');
+        upsertRuleMutation.mutate({ channelType: 'sms', enabled: smsEnabled, config: { phone_number: smsPhone }, events });
     };
 
     if (isLoading) {
@@ -282,6 +322,80 @@ function ProjectAlerts({ project }: { project: Project }) {
                             </div>
                         </div>
                         <Button size="sm" onClick={handleSaveDiscord} disabled={upsertRuleMutation.isPending}>Save Discord Config</Button>
+                    </div>
+                </div>
+                <div className="h-px bg-border" />
+
+                {/* Teams Channel */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-600/10 text-indigo-600 rounded-lg">
+                                <MessageSquare className="size-5" />
+                            </div>
+                            <div>
+                                <h3 className="font-medium">Microsoft Teams</h3>
+                                <p className="text-sm text-muted-foreground">Post to a Teams channel.</p>
+                            </div>
+                        </div>
+                        <Switch checked={teamsEnabled} onCheckedChange={(v) => setTeamsEnabled(v)} />
+                    </div>
+
+                    <div className="pl-14 space-y-4">
+                        <div className="grid gap-2">
+                            <label className="text-xs font-medium uppercase text-muted-foreground">Webhook URL</label>
+                            <Input
+                                placeholder="https://outlook.office.com/webhook/..."
+                                value={teamsUrl}
+                                onChange={(e) => setTeamsUrl(e.target.value)}
+                                className="font-mono text-sm"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <div className="flex items-center gap-2">
+                                <Checkbox id="teams-fail" checked={teamsFailedEnabled} onCheckedChange={(v) => setTeamsFailedEnabled(!!v)} />
+                                <label htmlFor="teams-fail" className="text-sm">Failed Deployments</label>
+                            </div>
+                        </div>
+                        <Button size="sm" onClick={handleSaveTeams} disabled={upsertRuleMutation.isPending}>Save Teams Config</Button>
+                    </div>
+                </div>
+
+                <div className="h-px bg-border" />
+
+                {/* SMS Channel */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-green-500/10 text-green-500 rounded-lg">
+                                <Phone className="size-5" />
+                            </div>
+                            <div>
+                                <h3 className="font-medium">SMS Notifications</h3>
+                                <p className="text-sm text-muted-foreground">Send text messages via Twilio.</p>
+                            </div>
+                        </div>
+                        <Switch checked={smsEnabled} onCheckedChange={(v) => setSmsEnabled(v)} />
+                    </div>
+
+                    <div className="pl-14 space-y-4">
+                        <div className="grid gap-2">
+                            <label className="text-xs font-medium uppercase text-muted-foreground">Phone Number</label>
+                            <Input
+                                placeholder="+1234567890"
+                                value={smsPhone}
+                                onChange={(e) => setSmsPhone(e.target.value)}
+                                className="font-mono text-sm"
+                            />
+                            <p className="text-[10px] text-muted-foreground">E.164 format required.</p>
+                        </div>
+                        <div className="grid gap-2">
+                            <div className="flex items-center gap-2">
+                                <Checkbox id="sms-fail" checked={smsFailedEnabled} onCheckedChange={(v) => setSmsFailedEnabled(!!v)} />
+                                <label htmlFor="sms-fail" className="text-sm">Failed Deployments</label>
+                            </div>
+                        </div>
+                        <Button size="sm" onClick={handleSaveSms} disabled={upsertRuleMutation.isPending}>Save SMS Config</Button>
                     </div>
                 </div>
             </div>
