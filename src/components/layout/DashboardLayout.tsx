@@ -13,12 +13,14 @@ import {
     LogOut,
     Rocket,
     Search,
+    Link2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navigation = [
     { name: 'Overview', href: '/overview', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
+    { name: 'Integrations', href: '/integrations', icon: Link2 },
     { name: 'Alerts', href: '/alerts', icon: Bell },
     { name: 'Billing', href: '/billing', icon: CreditCard },
     { name: 'Settings', href: '/settings', icon: Settings },

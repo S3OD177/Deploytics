@@ -37,41 +37,58 @@ export default function Billing() {
         enabled: !!user,
     })
 
-    // Fetch Deployments for usage stats
+    // Fetch Deployments for usage stats (Last 30 days)
     const { data: deployments = [] } = useQuery({
         queryKey: ['deployments-usage'],
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('deployments')
-                .select('created_at, status, duration')
+                .select('project_id, created_at, status, duration')
                 .eq('status', 'success')
-                .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) // Last 30 days
+                .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
             if (error) throw error
             return data
         },
         enabled: !!user,
     })
 
-    // Calculate Usage Stats
+    // Calculate Usage Stats (Real Data Only)
     const now = new Date();
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     const totalDeploysLast24h = deployments.filter((d: any) => new Date(d.created_at) > oneDayAgo).length;
 
-    // Mock build minutes if duration is missing (default 2 mins per build)
-    const buildMinutes = deployments.reduce((acc: number, curr: any) => acc + (curr.duration ? Math.ceil(curr.duration / 60) : 2), 0);
+    // Calculate real build minutes (defaults to 0 if duration is missing)
+    const buildMinutes = deployments.reduce((acc: number, curr: any) => acc + (curr.duration ? Math.ceil(curr.duration / 60) : 0), 0);
 
-    // Mock bandwidth (random for demo or based on deploys)
-    const bandwidthGB = parseFloat((deployments.length * 0.5).toFixed(2)); // 0.5 GB per deploy avg
+    // Bandwidth is not currently tracked, set to 0.0 to indicate no data
+    const bandwidthGB = 0.0;
 
-    // Generate Project Signals (mock analysis)
-    const projectSignals = projects.map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        activityLevel: Math.random() > 0.7 ? 'High' : Math.random() > 0.4 ? 'Medium' : 'Low',
-        impact: Math.random() > 0.7 ? '$2.50' : '$0.00',
-        trend: Math.random() > 0.5 ? '+5%' : '0%'
-    }));
+    // Generate Project Signals based on REAL deployment data
+    const projectSignals = projects.map((p: any) => {
+        const projectDeploys = deployments.filter((d: any) => d.project_id === p.id);
+        const deployCount = projectDeploys.length;
+
+        let activityLevel = 'Low';
+        if (deployCount > 20) activityLevel = 'High';
+        else if (deployCount > 5) activityLevel = 'Medium';
+
+        // Calculate impact based on build minutes (e.g. $0.05/min)
+        const projectMinutes = projectDeploys.reduce((acc: number, curr: any) => acc + (curr.duration ? Math.ceil(curr.duration / 60) : 0), 0);
+        const estCost = projectMinutes * 0.05; // $0.05 per minute assumption from BillingOverview
+
+        // Trend calculation needs more data, we'll leave it as "Stable" or derived if possible
+        // For now, "Stable" is a safe neutral derived value, not random.
+        const trend = 'Stable';
+
+        return {
+            id: p.id,
+            name: p.name,
+            activityLevel,
+            impact: `$${estCost.toFixed(2)}`,
+            trend
+        };
+    });
 
     return (
         <div className="space-y-8">

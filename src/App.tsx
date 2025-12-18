@@ -10,6 +10,7 @@ import Projects from '@/pages/Projects'
 import ProjectDetail from '@/pages/ProjectDetail'
 import Alerts from '@/pages/Alerts'
 import Settings from '@/pages/Settings'
+import Integrations from '@/pages/Integrations'
 import Billing from '@/pages/Billing'
 
 // Layout
@@ -55,6 +56,7 @@ function AppRoutes() {
                 <Route path="projects/:id" element={<ProjectDetail />} />
                 <Route path="alerts" element={<Alerts />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="integrations" element={<Integrations />} />
                 <Route path="billing" element={<Billing />} />
             </Route>
 
