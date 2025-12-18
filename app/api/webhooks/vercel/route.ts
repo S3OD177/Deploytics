@@ -1,16 +1,31 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
     try {
+        const bodyText = await request.text();
+        const signature = request.headers.get('x-vercel-signature');
+        const webhookSecret = process.env.VERCEL_WEBHOOK_SECRET;
+
+        // Verify Signature if Valid Secret is Present
+        if (webhookSecret) {
+            if (!signature) {
+                return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+            }
+            const computedSignature = crypto
+                .createHmac('sha1', webhookSecret)
+                .update(bodyText)
+                .digest('hex');
+
+            if (computedSignature !== signature) {
+                return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+            }
+        }
+
         const supabase = await createClient();
-        const payload = await request.json();
-
-        // Verify signature logic would go here in a real app (x-vercel-signature)
-
-        // For now, accept generic payload mapping to deployment
-        // Example Vercel payload: { type: "deployment.created", payload: { deployment: { ... } } }
+        const payload = JSON.parse(bodyText);
 
         const { type, payload: content } = payload;
 
@@ -25,7 +40,6 @@ export async function POST(request: Request) {
             // NOTE: In a real world scenario, we need to map Vercel project ID to our internal project ID.
             // We might store Vercel Project ID in our `projects` table or `integrations` config.
             // For this MVP, we will try to find a project with the same name.
-
             const projectName = deployment.name;
             const { data: project } = await supabase.from('projects').select('id').eq('name', projectName).single();
 

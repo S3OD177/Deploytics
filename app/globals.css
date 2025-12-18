@@ -50,45 +50,47 @@
   /* Stitch Dark Mode Palette */
   --background: #101622;
   --foreground: #ffffff;
-  
+
   --card: #151c2b;
   --card-foreground: #ffffff;
-  
+
   --popover: #151c2b;
   --popover-foreground: #ffffff;
-  
+
   --primary: #135bec;
   --primary-foreground: #ffffff;
-  
+
   --secondary: #1e2736;
   --secondary-foreground: #ffffff;
-  
+
   --muted: #1e2736;
   --muted-foreground: #94a3b8;
-  
+
   --accent: #1e2736;
   --accent-foreground: #ffffff;
-  
+
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  
+
   --border: #2a3447;
   --input: #2a3447;
   --ring: #135bec;
-  
-  --radius: 0.5rem; /* Stitch uses 0.25rem to 0.75rem. Defaulting to 0.5rem (lg in config) */
-  
+
+  --radius: 0.5rem;
+  /* Stitch uses 0.25rem to 0.75rem. Defaulting to 0.5rem (lg in config) */
+
   --chart-1: #135bec;
   --chart-2: #22c55e;
   --chart-3: #eab308;
   --chart-4: #ef4444;
   --chart-5: #a855f7;
-  
+
   --sidebar: #151c2b;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #135bec;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #135bec1a; /* bg-primary/10 */
+  --sidebar-accent: #135bec1a;
+  /* bg-primary/10 */
   --sidebar-accent-foreground: #135bec;
   --sidebar-border: #2a3447;
   --sidebar-ring: #135bec;
@@ -98,7 +100,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at 50% 0%, #1e2736 0%, #101622 100%);
+    background-attachment: fixed;
   }
 }
