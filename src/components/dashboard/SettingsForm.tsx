@@ -58,25 +58,19 @@ export function SettingsForm({ userEmail, userPlan = "Free" }: SettingsFormProps
                 </div>
             </section>
 
-            {/* Connected Integrations */}
+            {/* Connected Integrations Link */}
             <section className="rounded-xl border border-border bg-card overflow-hidden">
                 <div className="p-6 border-b border-border">
-                    <h2 className="text-xl font-semibold text-foreground">Connected Integrations</h2>
+                    <h2 className="text-xl font-semibold text-foreground">Integrations</h2>
                     <p className="text-sm text-muted-foreground mt-1">Manage your connections to third-party services.</p>
                 </div>
-                <div className="divide-y divide-border">
-                    <IntegrationRow
-                        name="GitHub"
-                        status="Connected"
-                        description="Read-only access to public and private repositories."
-                        icon="github"
-                    />
-                    <IntegrationRow
-                        name="Vercel"
-                        status="Connected"
-                        description="Access to deployment status and build logs."
-                        icon="vercel"
-                    />
+                <div className="p-6 flex flex-col items-center justify-center text-center gap-4 py-12">
+                    <p className="text-muted-foreground max-w-md">
+                        Connect GitHub, Vercel, and other services to automatically track your deployments and metrics in real-time.
+                    </p>
+                    <Button asChild>
+                        <a href="/integrations">Manage Integrations</a>
+                    </Button>
                 </div>
             </section>
 
@@ -122,37 +116,7 @@ export function SettingsForm({ userEmail, userPlan = "Free" }: SettingsFormProps
     );
 }
 
-function IntegrationRow({ name, status, description, icon }: any) {
-    return (
-        <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-                <div className="size-12 rounded-lg bg-background flex items-center justify-center border border-white/10 shrink-0">
-                    {icon === 'github' ? (
-                        // Simple placeholder for GitHub icon
-                        <div className="font-bold text-xl">GH</div>
-                    ) : (
-                        // Simple placeholder for Vercel icon
-                        <svg className="w-6 h-6 text-foreground" fill="none" viewBox="0 0 1155 1000" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M577.344 0L1154.69 1000H0L577.344 0Z" fill="currentColor"></path>
-                        </svg>
-                    )}
-                </div>
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium text-foreground">{name}</h3>
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                            {status}
-                        </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{description}</p>
-                </div>
-            </div>
-            <Button variant="outline" className="text-rose-400 border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-400 w-full md:w-auto">
-                Disconnect
-            </Button>
-        </div>
-    )
-}
+
 
 function SecurityItem({ text }: { text: React.ReactNode }) {
     return (

@@ -89,9 +89,13 @@ export const IntegrationService = {
         }
     },
 
-    async validateVideoService(apiKey: string): Promise<ValidationResult> {
-        // Placeholder for a generic video service if needed, user mentioned "serveless service" which might be anything.
-        // Assuming specific ones for now.
-        return { isValid: true };
+    // Generic validation helper if needed in future
+    async validateGeneric(url: string, token: string): Promise<boolean> {
+        try {
+            const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+            return res.ok;
+        } catch {
+            return false;
+        }
     }
 };

@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Github, Cloud, Database, Server, Loader2, Check, ExternalLink, Unplug, Info } from "lucide-react";
+import { Loader2, Check, ExternalLink, Unplug, Info } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
     Tooltip,
@@ -20,7 +21,7 @@ const INTEGRATIONS = [
         id: "github",
         name: "GitHub",
         description: "Connect your repositories to track commits, pull requests, and CI/CD workflows.",
-        icon: Github,
+        icon: Icons.GitHub,
         color: "text-white",
         bgColor: "bg-zinc-900",
         docsUrl: "https://github.com/settings/tokens",
@@ -44,7 +45,7 @@ const INTEGRATIONS = [
         id: "vercel",
         name: "Vercel",
         description: "Monitor your deployments, domains, and build logs in real-time.",
-        icon: Cloud,
+        icon: Icons.Vercel,
         color: "text-black dark:text-white",
         bgColor: "bg-white dark:bg-black",
         docsUrl: "https://vercel.com/account/tokens",
@@ -67,7 +68,7 @@ const INTEGRATIONS = [
         id: "supabase",
         name: "Supabase",
         description: "Track your database health, storage usage, and API requests.",
-        icon: Database,
+        icon: Icons.Supabase,
         color: "text-emerald-400",
         bgColor: "bg-emerald-950",
         docsUrl: "https://supabase.com/dashboard/account/tokens",
@@ -90,7 +91,7 @@ const INTEGRATIONS = [
         id: "netlify",
         name: "Netlify",
         description: "Deployments, bandwidth, and forms",
-        icon: Cloud,
+        icon: Icons.Netlify,
         color: "text-teal-400",
         bgColor: "bg-teal-950",
         docsUrl: "https://app.netlify.com/user/applications#personal-access-tokens",
@@ -104,7 +105,7 @@ const INTEGRATIONS = [
         id: "railway",
         name: "Railway",
         description: "Services, usage, and logs",
-        icon: Server,
+        icon: Icons.Railway,
         color: "text-purple-400",
         bgColor: "bg-purple-950",
         docsUrl: "https://railway.app/account/tokens",
@@ -118,7 +119,7 @@ const INTEGRATIONS = [
         id: "render",
         name: "Render",
         description: "Services, deployments, and metrics",
-        icon: Server,
+        icon: Icons.Render,
         color: "text-blue-400",
         bgColor: "bg-blue-950",
         docsUrl: "https://dashboard.render.com/u/settings#api-keys",

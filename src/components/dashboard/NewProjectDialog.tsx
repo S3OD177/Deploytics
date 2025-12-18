@@ -1,6 +1,7 @@
 
 
 import { useState, useTransition } from "react";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,24 +48,20 @@ export function NewProjectDialog({
 
         startTransition(async () => {
             try {
-                const res = await fetch('/api/projects', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, tier }),
+                const { error } = await supabase.from('projects').insert({
+                    name,
+                    tier,
+                    user_id: (await supabase.auth.getUser()).data.user?.id
                 });
 
-                const data = await res.json();
+                if (error) throw error;
 
-                if (data.error) {
-                    toast.error(data.error);
-                } else {
-                    toast.success("Project created!");
-                    setOpen(false);
-                    setName("");
-                    window.location.reload();
-                }
-            } catch (error) {
-                toast.error("Failed to create project");
+                toast.success("Project created!");
+                setOpen(false);
+                setName("");
+                navigate(0); // Refresh page
+            } catch (error: any) {
+                toast.error(error.message || "Failed to create project");
             }
         });
     };

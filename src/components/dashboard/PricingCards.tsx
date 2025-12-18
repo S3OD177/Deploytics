@@ -7,6 +7,7 @@ import { Check, Zap, Building2, Sparkles, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 const PLANS = [
     {
@@ -71,21 +72,21 @@ export function PricingCards({ currentPlan = "free" }: { currentPlan?: string })
     const handleCheckout = async (planId: string, type: 'subscription' | 'addon') => {
         setLoading(planId);
         try {
-            const res = await fetch('/api/polar/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plan: planId, type }),
+            // Use Supabase Edge Function for secure checkout
+            const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+                body: { plan: planId, type }
             });
 
-            const data = await res.json();
+            if (error) throw error;
 
-            if (data.error) {
-                toast.error(data.error);
-            } else if (data.url) {
+            if (data.url) {
                 window.location.href = data.url;
+            } else {
+                toast.error("Invalid response from checkout service");
             }
-        } catch (error) {
-            toast.error("Failed to create checkout");
+        } catch (error: any) {
+            console.error(error);
+            toast.error("Checkout service not configured yet (Edge Function missing)");
         } finally {
             setLoading(null);
         }
