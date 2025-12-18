@@ -1,0 +1,16 @@
+name: Weekly Cleanup
+
+on:
+  schedule:
+    # Runs every Sunday at midnight
+    - cron: '0 0 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old deployments
+        run: |
+          curl -X POST https://mtqyfrsgwnygcsaopxzj.supabase.co/functions/v1/cleanup-deployments
+          echo "✅ Cleanup complete"
