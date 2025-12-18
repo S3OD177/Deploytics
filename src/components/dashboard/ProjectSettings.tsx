@@ -121,7 +121,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps) {
                     <CardTitle className="text-red-500 flex items-center gap-2 text-lg">
                         <ShieldAlert className="size-5" />
                         Danger Zone
-                    </Title>
+                    </CardTitle>
                     <CardDescription className="text-red-500/80">
                         Irreversible actions that cannot be undone.
                     </CardDescription>

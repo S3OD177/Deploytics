@@ -7,7 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TeamManager } from "@/components/dashboard/TeamManager"
 import { ProjectSettings } from "@/components/dashboard/ProjectSettings"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 
 export default function ProjectDetail() {
     const { id } = useParams()

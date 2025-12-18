@@ -1,7 +1,7 @@
-
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, Sparkles, TrendingDown, ArrowUpRight, Lightbulb } from "lucide-react";
+import { Sparkles, Lightbulb, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface AiInsightsProps {
     metrics: {
@@ -15,7 +15,6 @@ export function AiInsights({ metrics }: AiInsightsProps) {
     // Determine a dynamic "insight" based on metrics
     let title = "Deployment Velocity is Stable";
     let message = "Your team is maintaining a healthy ship rate. No immediate action required.";
-    let icon = <ShieldCheck className="size-5" />;
     let type: 'info' | 'warning' | 'success' = 'info';
 
     if (metrics.deploymentFrequency.rating === 'Low') {
@@ -59,6 +58,3 @@ export function AiInsights({ metrics }: AiInsightsProps) {
         </Card>
     );
 }
-
-import { Badge } from "@/components/ui/badge";
-import { ShieldCheck } from "lucide-react";

@@ -22,7 +22,7 @@ export function useKeyboardShortcuts() {
             // Alt + P -> Projects
             if (e.altKey && e.key === 'p') {
                 e.preventDefault();
-                navigate('/overview');
+                navigate('/projects');
             }
 
             // Alt + S -> Settings
