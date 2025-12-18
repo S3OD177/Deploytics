@@ -65,6 +65,30 @@ export const IntegrationService = {
         }
     },
 
+    async getVercelProjects(token: string): Promise<{ id: string; name: string }[]> {
+        try {
+            const res = await fetch('https://api.vercel.com/v9/projects', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) {
+                console.error('[Vercel Projects] API Error:', res.status, await res.text());
+                return [];
+            }
+
+            const data = await res.json();
+            return data.projects.map((p: any) => ({
+                id: p.id,
+                name: p.name
+            }));
+        } catch (error) {
+            console.error('[Vercel Projects] Network Error:', error);
+            return [];
+        }
+    },
+
     async validateSupabase(token: string): Promise<ValidationResult> {
         try {
             const res = await fetch('https://api.supabase.com/v1/projects', {

@@ -68,7 +68,7 @@ export default function Integrations() {
     }, [projects, selectedProjectId])
 
     const saveIntegrationMutation = useMutation({
-        mutationFn: async ({ provider, token, scopes }: { provider: string, token: string, scopes: string[] }) => {
+        mutationFn: async ({ provider, token, scopes, metadata = {} }: { provider: string, token: string, scopes: string[], metadata?: any }) => {
             if (!selectedProjectId) throw new Error("Please select a project first.")
 
             let validation;
@@ -77,6 +77,7 @@ export default function Integrations() {
                     validation = await IntegrationService.validateGitHub(token);
                     break;
                 case 'vercel':
+                    // We validate again here just to be safe, or we could skip if we trust the input
                     validation = await IntegrationService.validateVercel(token);
                     break;
                 case 'supabase':
@@ -91,6 +92,9 @@ export default function Integrations() {
                 throw new Error(validation.error || 'Invalid token');
             }
 
+            // Merge passed metadata with validation metadata
+            const finalMetadata = { ...validation.metadata, ...metadata };
+
             // Save to Supabase
             // We use upsert based on (project_id, provider) unique constraint
             const { error } = await supabase
@@ -100,8 +104,12 @@ export default function Integrations() {
                     provider,
                     config: {
                         access_token: token,
-                        metadata: validation.metadata,
+                        metadata: finalMetadata,
                         selected_scopes: scopes,
+                        // If it's Vercel, we might want to lift project_id to top level of config for easier querying if needed,
+                        // or just keep it in metadata or config root.
+                        // The webhook looks for config->>project_id
+                        ...(metadata?.project_id ? { project_id: metadata.project_id } : {})
                     },
                     status: 'connected',
                     last_synced_at: new Date().toISOString()
@@ -114,9 +122,9 @@ export default function Integrations() {
         }
     })
 
-    const handleSaveIntegration = async (provider: string, token: string, scopes: string[]) => {
+    const handleSaveIntegration = async (provider: string, token: string, scopes: string[], metadata?: any) => {
         try {
-            await saveIntegrationMutation.mutateAsync({ provider, token, scopes })
+            await saveIntegrationMutation.mutateAsync({ provider, token, scopes, metadata })
             return {}
         } catch (err: any) {
             return { error: err.message }

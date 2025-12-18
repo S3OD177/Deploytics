@@ -16,7 +16,7 @@ import Billing from '@/pages/Billing'
 import StatusPage from '@/pages/StatusPage'
 import AcceptInvite from '@/pages/AcceptInvite'
 import NotFound from '@/pages/NotFound'
-import Roadmap from '@/pages/Roadmap'
+
 
 // Layout
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -63,7 +63,7 @@ function AppRoutes() {
                 <Route path="settings" element={<Settings />} />
                 <Route path="integrations" element={<Integrations />} />
                 <Route path="billing" element={<Billing />} />
-                <Route path="roadmap" element={<Roadmap />} />
+
             </Route>
 
             {/* Public Status Page (No Auth) */}

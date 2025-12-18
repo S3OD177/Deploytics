@@ -15,6 +15,14 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { IntegrationService } from "@/lib/integrations";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const INTEGRATIONS = [
     {
@@ -149,7 +157,7 @@ export function IntegrationsManager({
     hasProjects = true
 }: {
     integrations: IntegrationData[];
-    onSave: (provider: string, token: string, scopes: string[]) => Promise<{ error?: string }>;
+    onSave: (provider: string, token: string, scopes: string[], metadata?: any) => Promise<{ error?: string }>;
     hasProjects?: boolean;
 }) {
     const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -157,11 +165,27 @@ export function IntegrationsManager({
     const [selectedScopes, setSelectedScopes] = useState<Record<string, string[]>>({});
     const [isPending, startTransition] = useTransition();
 
+    // Vercel specific state
+    const [connectionStep, setConnectionStep] = useState<'input' | 'select_project'>('input');
+    const [vercelProjects, setVercelProjects] = useState<{ id: string, name: string }[]>([]);
+    const [selectedVercelProject, setSelectedVercelProject] = useState<string>('');
+    const [isFetchingProjects, setIsFetchingProjects] = useState(false);
+
+    // Reset when expanding/collapsing
+    const handleExpand = (id: string | null) => {
+        setExpandedId(id);
+        if (!id || id !== expandedId) {
+            setConnectionStep('input');
+            setVercelProjects([]);
+            setSelectedVercelProject('');
+        }
+    };
+
     const getIntegrationStatus = (providerId: string) => {
         return integrations.find(i => i.provider === providerId);
     };
 
-    const handleConnect = (providerId: string) => {
+    const handleConnect = async (providerId: string) => {
         const token = tokens[providerId];
         const scopes = selectedScopes[providerId] || INTEGRATIONS.find(i => i.id === providerId)?.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
 
@@ -175,15 +199,51 @@ export function IntegrationsManager({
             return;
         }
 
+        // Vercel 2-step process
+        if (providerId === 'vercel' && connectionStep === 'input') {
+            setIsFetchingProjects(true);
+            try {
+                // 1. Validate Token
+                const validation = await IntegrationService.validateVercel(token);
+                if (!validation.isValid) {
+                    toast.error(validation.error || "Invalid Vercel token");
+                    setIsFetchingProjects(false);
+                    return;
+                }
+
+                // 2. Fetch Projects
+                const projects = await IntegrationService.getVercelProjects(token);
+                if (projects.length === 0) {
+                    toast.error("No Vercel projects found for this token. Please check your permissions.");
+                    setIsFetchingProjects(false);
+                    return;
+                }
+
+                setVercelProjects(projects);
+                setConnectionStep('select_project');
+                if (projects.length > 0) setSelectedVercelProject(projects[0].id);
+                toast.success("Token verified. Please select a project.");
+            } catch (error: any) {
+                toast.error(error.message || "Failed to fetch Vercel projects");
+            } finally {
+                setIsFetchingProjects(false);
+            }
+            return;
+        }
+
         startTransition(() => {
             (async () => {
-                const result = await onSave(providerId, token, scopes);
+                const metadata = (providerId === 'vercel' && selectedVercelProject)
+                    ? { project_id: selectedVercelProject }
+                    : {};
+
+                const result = await onSave(providerId, token, scopes, metadata);
                 if (result.error) {
                     toast.error(result.error);
                 } else {
                     toast.success(`${providerId} connected successfully!`);
                     setTokens(prev => ({ ...prev, [providerId]: '' }));
-                    setExpandedId(null);
+                    handleExpand(null);
                 }
             })();
         });
@@ -426,29 +486,64 @@ export function IntegrationsManager({
                                             <div className="space-y-3">
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                                        Step 2: Enter Token
+                                                        {integration.id === 'vercel' && connectionStep === 'select_project'
+                                                            ? "Step 3: Select Project"
+                                                            : "Step 2: Enter Token"
+                                                        }
                                                     </span>
+                                                    {integration.id === 'vercel' && connectionStep === 'select_project' && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-6 text-[10px] px-2"
+                                                            onClick={() => setConnectionStep('input')}
+                                                        >
+                                                            Change Token
+                                                        </Button>
+                                                    )}
                                                 </div>
-                                                <Input
-                                                    type="password"
-                                                    placeholder={integration.placeholder}
-                                                    value={tokens[integration.id] || ''}
-                                                    onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
-                                                    className="h-9 text-sm font-mono bg-background border-primary/20 focus:border-primary shadow-inner"
-                                                />
+
+                                                {integration.id === 'vercel' && connectionStep === 'select_project' ? (
+                                                    <Select
+                                                        value={selectedVercelProject}
+                                                        onValueChange={setSelectedVercelProject}
+                                                    >
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select a Vercel Project" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {vercelProjects.map((p) => (
+                                                                <SelectItem key={p.id} value={p.id}>
+                                                                    {p.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Input
+                                                        type="password"
+                                                        placeholder={integration.placeholder}
+                                                        value={tokens[integration.id] || ''}
+                                                        onChange={(e) => setTokens(prev => ({ ...prev, [integration.id]: e.target.value }))}
+                                                        className="h-9 text-sm font-mono bg-background border-primary/20 focus:border-primary shadow-inner"
+                                                    />
+                                                )}
+
                                                 <div className="flex gap-2">
                                                     <Button
                                                         size="sm"
                                                         className="flex-1 font-bold shadow-md hover:shadow-lg transition-all"
                                                         onClick={() => handleConnect(integration.id)}
-                                                        disabled={isPending || !hasProjects}
+                                                        disabled={isPending || isFetchingProjects || !hasProjects}
                                                     >
-                                                        {isPending ? <Loader2 className="size-4 animate-spin" /> : "Verify & Connect"}
+                                                        {isPending || isFetchingProjects ? <Loader2 className="size-4 animate-spin" /> :
+                                                            (integration.id === 'vercel' && connectionStep === 'input' ? "Verify Token" : "Connect Integration")
+                                                        }
                                                     </Button>
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
-                                                        onClick={() => setExpandedId(null)}
+                                                        onClick={() => handleExpand(null)}
                                                     >
                                                         Cancel
                                                     </Button>
@@ -495,7 +590,7 @@ export function IntegrationsManager({
                                                                 size="sm"
                                                                 variant="outline"
                                                                 className="w-full h-9"
-                                                                onClick={() => !integration.comingSoon && hasProjects && setExpandedId(integration.id)}
+                                                                onClick={() => !integration.comingSoon && hasProjects && handleExpand(integration.id)}
                                                                 disabled={integration.comingSoon || !hasProjects}
                                                             >
                                                                 {integration.comingSoon ? "Coming Soon" : "Configure & Connect"}

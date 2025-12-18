@@ -22,8 +22,6 @@ import {
 import { cn } from '@/lib/utils'
 
 const navigation = [
-    { name: 'Roadmap (500)', href: '/roadmap', icon: Sparkles },
-    { name: 'Onboarding', href: '/onboarding', icon: Flag },
     { name: 'Overview', href: '/overview', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Integrations', href: '/integrations', icon: Link2 },
