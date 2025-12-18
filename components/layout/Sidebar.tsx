@@ -21,11 +21,11 @@ const sidebarLinks = [
     { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
 
     return (
-        <aside className="hidden lg:flex flex-col w-72 h-full bg-sidebar border-r border-sidebar-border">
+        <aside className={cn("hidden lg:flex flex-col w-72 h-full bg-sidebar border-r border-sidebar-border", className)}>
             <div className="p-6 flex items-center gap-3">
                 <div className="bg-primary/10 rounded-full size-10 flex items-center justify-center text-primary">
                     <Activity className="size-6" />

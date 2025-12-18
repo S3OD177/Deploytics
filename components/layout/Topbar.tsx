@@ -4,13 +4,13 @@ import { Search, Bell, HelpCircle, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { MobileNav } from "@/components/layout/MobileNav";
+
 export function Topbar() {
     return (
         <header className="flex items-center justify-between border-b border-border px-6 lg:px-10 py-4 bg-background z-10 sticky top-0">
             <div className="flex items-center gap-4 lg:gap-8 flex-1">
-                <Button variant="ghost" size="icon" className="lg:hidden text-muted-foreground">
-                    <Menu className="size-6" />
-                </Button>
+                <MobileNav />
                 <h2 className="hidden md:block text-foreground text-lg font-bold leading-tight tracking-tight">
                     Dashboard
                 </h2>
