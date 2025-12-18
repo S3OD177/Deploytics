@@ -3,6 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 import crypto from 'crypto';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
     try {
         const bodyText = await request.text();

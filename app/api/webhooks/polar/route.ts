@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import crypto from "crypto";
 
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
     try {
         const bodyText = await request.text();
