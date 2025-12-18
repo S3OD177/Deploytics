@@ -135,6 +135,7 @@ interface IntegrationData {
     id: string;
     provider: string;
     status: string;
+    environment: string;
     config: {
         access_token?: string;
         selected_scopes?: string[];
@@ -149,21 +150,23 @@ export function IntegrationsManager({
     hasProjects = true
 }: {
     integrations: IntegrationData[];
-    onSave: (provider: string, token: string, scopes: string[]) => Promise<{ error?: string }>;
+    onSave: (provider: string, token: string, scopes: string[], environment: string) => Promise<{ error?: string }>;
     hasProjects?: boolean;
 }) {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [tokens, setTokens] = useState<Record<string, string>>({});
     const [selectedScopes, setSelectedScopes] = useState<Record<string, string[]>>({});
+    const [environments, setEnvironments] = useState<Record<string, string>>({});
     const [isPending, startTransition] = useTransition();
 
-    const getIntegrationStatus = (providerId: string) => {
-        return integrations.find(i => i.provider === providerId);
+    const getIntegrationStatus = (providerId: string, environment: string = 'production') => {
+        return integrations.find(i => i.provider === providerId && i.environment === environment);
     };
 
     const handleConnect = (providerId: string) => {
         const token = tokens[providerId];
         const scopes = selectedScopes[providerId] || INTEGRATIONS.find(i => i.id === providerId)?.fetchOptions?.filter(o => o.default).map(o => o.id) || [];
+        const environment = environments[providerId] || 'production';
 
         if (!token) {
             toast.error("Please enter an access token");
@@ -177,11 +180,11 @@ export function IntegrationsManager({
 
         startTransition(() => {
             (async () => {
-                const result = await onSave(providerId, token, scopes);
+                const result = await onSave(providerId, token, scopes, environment);
                 if (result.error) {
                     toast.error(result.error);
                 } else {
-                    toast.success(`${providerId} connected successfully!`);
+                    toast.success(`${providerId} (${environment}) connected successfully!`);
                     setTokens(prev => ({ ...prev, [providerId]: '' }));
                     setExpandedId(null);
                 }
@@ -424,9 +427,27 @@ export function IntegrationsManager({
 
                                             {/* Input Area */}
                                             <div className="space-y-3">
+                                                {/* Environment Selector */}
+                                                <div className="space-y-2">
+                                                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                                        Environment
+                                                    </span>
+                                                    <select
+                                                        value={environments[integration.id] || 'production'}
+                                                        onChange={(e) => setEnvironments(prev => ({ ...prev, [integration.id]: e.target.value }))}
+                                                        className="w-full h-9 px-3 text-sm rounded-md border border-input bg-background hover:bg-accent focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                                    >
+                                                        <option value="production">Production</option>
+                                                        <option value="staging">Staging</option>
+                                                        <option value="preview">Preview</option>
+                                                        <option value="development">Development</option>
+                                                    </select>
+                                                </div>
+
+                                                {/* Token Input */}
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                                                        Step 2: Enter Token
+                                                        Access Token
                                                     </span>
                                                 </div>
                                                 <Input

@@ -60,7 +60,7 @@ export default function Integrations() {
     const hasProjects = projects.length > 0
 
     const saveIntegrationMutation = useMutation({
-        mutationFn: async ({ provider, token, scopes }: { provider: string, token: string, scopes: string[] }) => {
+        mutationFn: async ({ provider, token, scopes, environment }: { provider: string, token: string, scopes: string[], environment: string }) => {
             if (!defaultProject) throw new Error("No project found to attach integration to. Please create a project first.")
 
             let validation;
@@ -84,12 +84,13 @@ export default function Integrations() {
             }
 
             // Save to Supabase
-            // We use upsert based on (project_id, provider) unique constraint
+            // We use upsert based on (project_id, provider, environment) unique constraint
             const { error } = await supabase
                 .from('integrations')
                 .upsert({
                     project_id: defaultProject.id,
                     provider,
+                    environment,
                     config: {
                         access_token: token,
                         metadata: validation.metadata,
@@ -97,7 +98,7 @@ export default function Integrations() {
                     },
                     status: 'connected',
                     last_synced_at: new Date().toISOString()
-                }, { onConflict: 'project_id,provider' })
+                }, { onConflict: 'project_id,provider,environment' })
 
             if (error) throw error;
         },
@@ -106,9 +107,9 @@ export default function Integrations() {
         }
     })
 
-    const handleSaveIntegration = async (provider: string, token: string, scopes: string[]) => {
+    const handleSaveIntegration = async (provider: string, token: string, scopes: string[], environment: string = 'production') => {
         try {
-            await saveIntegrationMutation.mutateAsync({ provider, token, scopes })
+            await saveIntegrationMutation.mutateAsync({ provider, token, scopes, environment })
             return {}
         } catch (err: any) {
             return { error: err.message }
