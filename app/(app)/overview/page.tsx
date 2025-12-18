@@ -27,12 +27,23 @@ export default async function OverviewPage() {
     `)
         .order('created_at', { ascending: false });
 
-    // Calculate Stats (Basic)
+    // Calculate Stats
     const totalProjects = projectsData?.length || 0;
-    const activeBuilds = projectsData?.reduce((acc, p) =>
-        acc + (p.deployments?.filter((d: any) => d.status === 'building').length || 0), 0) || 0;
-    const failedDeploys = projectsData?.reduce((acc, p) =>
-        acc + (p.deployments?.filter((d: any) => d.status === 'failed').length || 0), 0) || 0;
+
+    // Trends using real timestamps
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const newProjectsThisWeek = projectsData?.filter((p: any) => new Date(p.created_at) > oneWeekAgo).length || 0;
+
+    // Flatten deployments for stats
+    const allDeployments = projectsData?.flatMap((p: any) => p.deployments || []) || [];
+
+    const activeBuilds = allDeployments.filter((d: any) => d.status === 'building').length;
+    const failedDeploysTotal = allDeployments.filter((d: any) => d.status === 'failed').length;
+    const failedDeploysToday = allDeployments.filter((d: any) => d.status === 'failed' && new Date(d.created_at) > todayStart).length;
 
     return (
         <div className="flex flex-col gap-8 pb-20">
@@ -53,8 +64,13 @@ export default async function OverviewPage() {
             {/* Stats Row */}
             <OverviewStats
                 totalProjects={totalProjects}
+                projectTrend={`+${newProjectsThisWeek} this week`}
+                projectTrendUp={newProjectsThisWeek > 0}
                 activeBuilds={activeBuilds}
-                failedDeploys={failedDeploys}
+                activeBuildsTrend={activeBuilds > 0 ? `${activeBuilds} running` : "No active builds"}
+                failedDeploys={failedDeploysTotal}
+                failedDeploysTrend={`+${failedDeploysToday} today`}
+                failedDeploysTrendUp={failedDeploysToday === 0} // Good if 0
             />
 
             {/* Projects Grid */}

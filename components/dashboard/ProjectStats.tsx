@@ -5,7 +5,17 @@ import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
-export function ProjectStats({ lastDeployment }: { lastDeployment: any }) {
+export function ProjectStats({
+    lastDeployment,
+    successRate = 0,
+    avgDuration = 0,
+    totalDeploys = 0
+}: {
+    lastDeployment: any,
+    successRate?: number,
+    avgDuration?: number,
+    totalDeploys?: number
+}) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Last Deployment Card */}
@@ -85,7 +95,7 @@ export function ProjectStats({ lastDeployment }: { lastDeployment: any }) {
                 </CardContent>
             </Card>
 
-            {/* Health Card */}
+            {/* Reliability / Performance Card (Real Data) */}
             <Card className="rounded-xl border-border bg-card hover:border-primary/50 transition-colors group">
                 <CardContent className="p-5 flex flex-col justify-between h-full">
                     <div className="flex items-start justify-between mb-4">
@@ -95,21 +105,21 @@ export function ProjectStats({ lastDeployment }: { lastDeployment: any }) {
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-muted-foreground">
-                                    System Health
+                                    Success Rate
                                 </h3>
-                                <p className="text-foreground font-semibold">100% Uptime</p>
+                                <p className="text-foreground font-semibold uppercase">{successRate.toFixed(1)}%</p>
                             </div>
                         </div>
                         <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-foreground">
-                            <MoreHorizontal className="size-5" />
+                            <Gauge className="size-5" />
                         </Button>
                     </div>
                     <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-3 mt-1">
                         <span className="flex items-center gap-1">
-                            <Gauge className="size-3.5" />
-                            Avg Latency
+                            <Rocket className="size-3.5" />
+                            Total Deploys
                         </span>
-                        <span className="text-foreground font-medium">50ms</span>
+                        <span className="text-foreground font-medium">{totalDeploys}</span>
                     </div>
                 </CardContent>
             </Card>

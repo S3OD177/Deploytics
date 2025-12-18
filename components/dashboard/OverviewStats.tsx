@@ -1,61 +1,106 @@
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Folder, ArrowUp, RefreshCw, AlertCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Folder, ArrowUp, ArrowDown, Activity, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface OverviewStatsProps {
     totalProjects?: number;
+    projectTrend?: string;
+    projectTrendUp?: boolean;
     activeBuilds?: number;
+    activeBuildsTrend?: string; // e.g. "3 running" or "In progress"
     failedDeploys?: number;
+    failedDeploysTrend?: string;
+    failedDeploysTrendUp?: boolean; // false usually for failed stuff
 }
 
-export function OverviewStats({ totalProjects = 12, activeBuilds = 3, failedDeploys = 1 }: OverviewStatsProps) {
+export function OverviewStats({
+    totalProjects = 0,
+    projectTrend = "0 this week",
+    projectTrendUp = true,
+    activeBuilds = 0,
+    activeBuildsTrend = "0 active",
+    failedDeploys = 0,
+    failedDeploysTrend = "0 today",
+    failedDeploysTrendUp = true // Default to true contextually (e.g. "0 failed" is good) but logic in parent handles "bad" trends
+}: OverviewStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-            {/* Total Projects */}
-            <Card className="rounded-xl border-border bg-card shadow-sm">
-                <CardContent className="p-5 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                        <p className="text-muted-foreground text-sm font-medium">Total Projects</p>
-                        <Folder className="size-5 text-muted-foreground/60" />
-                    </div>
-                    <div className="flex items-end gap-2 mt-2">
-                        <p className="text-foreground text-3xl font-bold leading-none">{totalProjects}</p>
-                        <span className="text-green-600 text-xs font-bold mb-1 flex items-center">
-                            <ArrowUp className="size-3.5 mr-0.5" /> 2 this week
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Active Builds */}
-            <Card className="rounded-xl border-border bg-card shadow-sm">
-                <CardContent className="p-5 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                        <p className="text-muted-foreground text-sm font-medium">Active Builds</p>
-                        <RefreshCw className="size-5 text-primary animate-spin-slow" />
-                    </div>
-                    <div className="flex items-end gap-2 mt-2">
-                        <p className="text-foreground text-3xl font-bold leading-none">{activeBuilds}</p>
-                        <span className="text-primary text-xs font-bold mb-1">In progress</span>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Failed Deployments */}
-            <Card className="rounded-xl border-border bg-card shadow-sm">
-                <CardContent className="p-5 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                        <p className="text-muted-foreground text-sm font-medium">Failed Deployments</p>
-                        <AlertCircle className="size-5 text-red-500" />
-                    </div>
-                    <div className="flex items-end gap-2 mt-2">
-                        <p className="text-foreground text-3xl font-bold leading-none">{failedDeploys}</p>
-                        <span className="text-red-600 text-xs font-bold mb-1 flex items-center">
-                            <ArrowUp className="size-3.5 mr-0.5" /> 1 today
-                        </span>
-                    </div>
-                </CardContent>
-            </Card>
+            <StatCard
+                title="Total Projects"
+                value={totalProjects}
+                trend={projectTrend}
+                trendUp={projectTrendUp}
+                icon={Folder}
+                iconClassName="text-blue-500"
+                bgClassName="bg-blue-500/10"
+            />
+            <StatCard
+                title="Active Builds"
+                value={activeBuilds}
+                trend={activeBuildsTrend}
+                trendUp={true} // Always pulsing for active
+                icon={Activity}
+                iconClassName="text-amber-500 animate-pulse"
+                bgClassName="bg-amber-500/10"
+            />
+            <StatCard
+                title="Failed Deployments"
+                value={failedDeploys}
+                trend={failedDeploysTrend}
+                trendUp={failedDeploysTrendUp}
+                isError={true}
+                icon={AlertCircle}
+                iconClassName="text-red-500"
+                bgClassName="bg-red-500/10"
+            />
         </div>
+    );
+}
+
+interface StatCardProps {
+    title: string;
+    value: number | string;
+    trend: string;
+    trendUp?: boolean;
+    isError?: boolean;
+    icon: React.ElementType;
+    iconClassName?: string;
+    bgClassName?: string;
+}
+
+function StatCard({ title, value, trend, trendUp, isError, icon: Icon, iconClassName, bgClassName }: StatCardProps) {
+    return (
+        <Card className="rounded-xl border-border/50 bg-card shadow-sm hover:shadow-md transition-all duration-300">
+            <CardContent className="p-6">
+                <div className="flex items-center justify-between space-x-4">
+                    <div className="flex items-center space-x-4">
+                        <div className={cn("p-2 rounded-lg", bgClassName)}>
+                            <Icon className={cn("h-6 w-6", iconClassName)} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+                            <h2 className="text-3xl font-bold tracking-tight">{value}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-medium">
+                    {isError ? (
+                        <span className="text-red-500 flex items-center">
+                            <ArrowUp className="mr-1 h-3 w-3" /> {trend}
+                        </span>
+                    ) : (
+                        <span className={cn("flex items-center", title === "Active Builds" ? "text-amber-500" : "text-emerald-500")}>
+                            {title === "Active Builds" ? (
+                                <Activity className="mr-1 h-3 w-3 animate-spin" />
+                            ) : (
+                                <ArrowUp className="mr-1 h-3 w-3" />
+                            )}
+                            {trend}
+                        </span>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 }

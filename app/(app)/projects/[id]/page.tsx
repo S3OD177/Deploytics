@@ -36,6 +36,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     const deployments = project.deployments || [];
     const lastDeployment = deployments.length > 0 ? deployments[0] : null;
 
+    // Calculate Real Metrics
+    const totalDeploys = deployments.length;
+    const successfulDeploys = deployments.filter((d: any) => d.status === 'success').length;
+    const successRate = totalDeploys > 0 ? (successfulDeploys / totalDeploys) * 100 : 0;
+
+    // Calculate Average Duration (only for those with duration)
+    const completedDeploys = deployments.filter((d: any) => d.duration_seconds > 0);
+    const avgDuration = completedDeploys.length > 0
+        ? Math.round(completedDeploys.reduce((acc: number, d: any) => acc + d.duration_seconds, 0) / completedDeploys.length)
+        : 0;
+
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Scrollable Content */}
@@ -45,7 +56,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                     <ProjectHeader project={project} />
 
                     {/* Project Stats */}
-                    <ProjectStats lastDeployment={lastDeployment} />
+                    <ProjectStats
+                        lastDeployment={lastDeployment}
+                        successRate={successRate}
+                        avgDuration={avgDuration}
+                        totalDeploys={totalDeploys}
+                    />
 
                     {/* Main Content Tabs */}
                     <Tabs defaultValue="timeline" className="w-full">
